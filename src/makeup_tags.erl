@@ -16,22 +16,6 @@
 	 declaration/3, dparam/4, dcomment/4, 
 	 section/4, comment/3,
 	 charref/3]).
-	 
--define(dbgi(Fmt,As), io:format((Fmt),(As))).
-
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--compile(export_all).
--ifdef(hard_debug).
--define(hard_dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(hard_dbg(Fmt,As), ok).
--endif.
-
--else.
--define(dbg(Fmt,As), ok).
--define(hard_dbg(Fmt,As), ok).
--endif.
 
 -define(ERROR, -1).
 -define(EXCLUDE, -2).
@@ -663,7 +647,7 @@ tag_end_mod(Tag, Line, Validate, CSt) ->
 processing(xml, Value, _Line, CSt) ->
     ?dbg("PROCESSING::~w xml ~s\n", [_Line,Value]),
     Flags = ?SET_FLAG(CSt#cstate.flags, ?FLAG_IS_XML),
-    ?hard_dbg(" XML-FLAGS=~w\n", [decode_flags(Flags)]),
+    ?dbg(" XML-FLAGS=~w\n", [decode_flags(Flags)]),
     KeyVal = makeup:keyval(Value),
     case lists:keysearch(encoding, 1, KeyVal) of
 	false ->
@@ -1113,7 +1097,7 @@ pop_tag(CSt) ->
     %% keep sticky flags
     Fsticky = ?GET_FLAG(Flags0, ?FLAG_STICKY),
     Flags = ?SET_FLAG_MASK(Flags1, ?FLAG_STICKY, Fsticky),
-    ?hard_dbg(" END ~w: flags=~w\n", [Elem#celem.tag,decode_flags(Flags)]),
+    ?dbg(" END ~w: flags=~w\n", [Elem#celem.tag,decode_flags(Flags)]),
     CSt1#cstate { ns_map = NsMap, lang = Lang, flags = Flags, stack = Stack }.
 
 %% remove quotes
@@ -1604,7 +1588,7 @@ state(Tag,Si,Sym,CSt) ->
 			    ?dbg("state(~p,~p,~p) = -1\n",[Tag,Si,Sym]),
 			    case include(Sym, CSt#cstate.stack) of
 				true ->
-				    ?dbgi("~s INCLUDED in ~s\n", [Sym,Tag]),
+				    ?dbg("~s INCLUDED in ~s\n", [Sym,Tag]),
 				    Si;
 				false -> ?ERROR
 			    end;

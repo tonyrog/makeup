@@ -41,12 +41,6 @@
 -include("../include/makeup.hrl").
 -include("../include/makeup_xsd.hrl").
 
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -define(ATTRIBUTES(XsdName,As),
 	attributes(record_info(fields,XsdName), #XsdName {}, As)).
 

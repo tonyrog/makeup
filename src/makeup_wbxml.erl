@@ -5,14 +5,6 @@
 
 -module(makeup_wbxml).
 
--define(dbgi(Fmt,As), io:format((Fmt),(As))).
-
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -include("../include/makeup.hrl").
 
 -define(DEFAULT_CBMOD, makeup_tags).

@@ -17,11 +17,6 @@
 
 -define(dbgi(Fmt,As), io:format((Fmt),(As))).
 
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
 
 %%
 %%  Formatting options

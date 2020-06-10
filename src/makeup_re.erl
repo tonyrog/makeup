@@ -5,16 +5,6 @@
 
 -module(makeup_re).
 
--import(lists, [member/2,reverse/1,seq/2,append/1]).
--import(lists, [foreach/2,map/2,flatmap/2,foldl/3,foldr/3, filter/2]).
--import(lists, [all/2, any/2]).
--import(lists, [keymember/3,keysearch/3,keysort/2]).
--import(ordsets, [new/0,is_element/2,add_element/2,union/2,subtract/2]).
-
--ifdef(debug).
--compile(export_all).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
 -export([match/2, format/1, format_tag/1, symbols/1]).
 
 -export([make_dfa/1, make_dfa/2,
@@ -22,9 +12,6 @@
 	 afa_from_dfa/1,
 	 make_dfa_new/1,
 	 minimise_dfa/2]).
-
--define(dbg(Fmt,As), ok).
--endif.
 
 -include("../include/makeup.hrl").
 
@@ -134,9 +121,9 @@ format_char(Char) ->
     end.
 
 format_list(REs,Op) ->
-    [$(, foldr(fun(RE,"")  -> format(RE);
-		  (RE,Acc) -> [format(RE),Op,Acc]
-	       end, "", REs), $)].
+    [$(, lists:foldr(fun(RE,"")  -> format(RE);
+			(RE,Acc) -> [format(RE),Op,Acc]
+		     end, "", REs), $)].
 
 format_actions([H]) -> 
     format_action(H);
@@ -235,7 +222,7 @@ re_apply({element,E}, More, [E|S], P) ->
 re_apply({char,C}, More, [C|S], P) ->
     re_apply_more(More, S, P+1);
 re_apply({choice,REs}, More, S, P) ->
-    foldl(
+    lists:foldl(
       fun(RE, Acc) ->
 	      re_apply_or(re_apply(RE,More,S,P), Acc)
       end, nomatch, REs);
@@ -342,19 +329,19 @@ rewrite({optional,RE}) ->
  	?epsilon       -> ?epsilon
     end;
 rewrite({sequence,REs}) ->
-    case map(fun(RE) -> rewrite(RE) end, REs) of
+    case lists:map(fun(RE) -> rewrite(RE) end, REs) of
 	[] -> empty;
 	[RE] -> RE;
 	RE1 -> {sequence,RE1}
     end;
 rewrite({choice,REs}) ->
-    case map(fun(RE) -> rewrite(RE) end, REs) of
+    case lists:map(fun(RE) -> rewrite(RE) end, REs) of
 	[] -> empty;
 	[RE] -> RE;
 	REs1 -> {choice,REs1}
     end;
 rewrite({all,REs}) ->
-    case map(fun(RE) -> rewrite(RE) end, REs) of
+    case lists:map(fun(RE) -> rewrite(RE) end, REs) of
 	[] -> empty;
 	[RE] -> RE;
 	REs1 -> {all,REs1}
@@ -384,13 +371,13 @@ expand({element,E}) -> {element,E};
 expand({char,C})    -> {char,C};
 expand({action,As}) -> {action,As};
 expand({choice,Cs}) -> 
-    case map(fun(C) -> expand(C) end, Cs) of
+    case lists:map(fun(C) -> expand(C) end, Cs) of
 	[] -> empty;
 	[C] -> C;
 	Cs1 -> {choice,Cs1}
     end;
 expand({sequence,Cs}) -> 
-    case map(fun(C) -> expand(C) end, Cs) of
+    case lists:map(fun(C) -> expand(C) end, Cs) of
 	[] -> empty;
 	[C] -> C;
 	Cs1 -> {sequence,Cs1}
@@ -408,7 +395,7 @@ expand({all,{N,M},Cs}) ->
 	{choice,Cs1} -> expand({choice,{N,M},Cs1})
     end;
 expand({F,{N,M},Cs}) when F==choice; F==sequence ->
-    E = {F,map(fun(C) -> expand(C) end, Cs)},
+    E = {F,lists:map(fun(C) -> expand(C) end, Cs)},
     expand(N, M,E);
 expand({F,{N,M},E}) when F==element; F==char ->
     expand(N, M,{F,E});
@@ -420,7 +407,7 @@ expand(N,unbounded,E) when is_integer(N), N>=0 ->
        true ->   {sequence,lists:duplicate(N,E)++[{closure,E}]}
     end;
 expand(N,M,E) when is_integer(N), N>=0, is_integer(M), N=<M ->
-    {choice, map(fun (0) -> empty;
+    {choice, lists:map(fun (0) -> empty;
 		     (1) -> E;
 		     (K) -> {sequence,lists:duplicate(K,E)} end,
 		 lists:seq(N,M))}.
@@ -433,7 +420,7 @@ make_dfa_new(RE) ->
     io:format("make_dfa_new: ~s\n", [format(RE1)]),
     {CRE, _,Position0} = cre(RE1, 1),
     Follow = lists:keysort(1, follow_cre(CRE,[])),
-    Position = list_to_tuple(map(fun({_I,Sym}) -> Sym end, Position0)),
+    Position = list_to_tuple(lists:map(fun({_I,Sym}) -> Sym end, Position0)),
     Symbols = symbols(RE1),
     io:format("position=~p\n", [Position]),
     io:format("symbols=~p\n", [Symbols]),
@@ -457,10 +444,10 @@ group_dfa([#fa_edge {id={St1,Sym},target=St2}|Dtran],St3,St0,Tr,DFA,Final) ->
     group_dfa(Dtran, St1, St0, Tr0,
 	      [#fa_state { id=St3,
 			   edges=Tr,
-			   accept=member(Final, St3)}|DFA],
+			   accept=lists:member(Final, St3)}|DFA],
 	      Final);
 group_dfa([], St1, St0, Tr, DFA, Final) ->
-    Accept = member(Final, St1),
+    Accept = lists:member(Final, St1),
     #fa { type = dfa,
 	  init = St0,
 	  states = [#fa_state { id=St1, edges=Tr, accept=Accept}|DFA]
@@ -472,31 +459,31 @@ dtran(Us, Follow, Positions, Symbols) ->
 dtran([T|Us],Symbols, Ms, Follow,Positions,Dtran) ->
     dtran(Symbols,Symbols,T,Us,[T|Ms],Follow,Positions,Dtran);
 dtran([], _Symbols, _Ms, _Follow, _Posisions, Dtran) ->
-    reverse(Dtran).
+    lists:reverse(Dtran).
 
 
 dtran([A|As],Symbols,T, Us, Ms, Follow,Positions,Dtran) ->
     U = 
-	foldl(
+	lists:foldl(
 	  fun(P,U0) ->
 		  case element(P, Positions) of
 		      {element,A} -> 
-			  union(U0,followpos(Follow,P));
+			  orders:union(U0,followpos(Follow,P));
 		      {char,A} -> 
-			  union(U0,followpos(Follow,P));
+			  orders:union(U0,followpos(Follow,P));
 		      ?dot ->
-			  union(U0,followpos(Follow,P));
+			  orders:union(U0,followpos(Follow,P));
 		      ?any ->
-			  union(U0,followpos(Follow,P));
+			  orders:union(U0,followpos(Follow,P));
 		      _ ->
 			  U0
 		  end
-	  end, new(), ordsets:to_list(T)),
+	  end, ordsets:new(), ordsets:to_list(T)),
     Dtran1 = [#fa_edge { id={T,A}, target=U} | Dtran],
     if U == [] ->
 	    dtran(As, Symbols, T, Us, Ms, Follow,Positions,Dtran1);
        true ->
-	    case member(U, Us) orelse member(U, Ms) of
+	    case lists:member(U, Us) orelse lists:member(U, Ms) of
 		true ->
 		    dtran(As, Symbols,T,Us,Ms,Follow,Positions,Dtran1);
 		false ->
@@ -510,18 +497,18 @@ dtran([], Symbols, _T, Us, Ms, Follow,Positions,Dtran) ->
 follow_cre(CRE, F0) ->
     case CRE#cre.operator of
 	choice -> 
-	    foldl(fun(CRE1,F) -> follow_cre(CRE1,F) end, F0, CRE#cre.operand);
+	    lists:foldl(fun(CRE1,F) -> follow_cre(CRE1,F) end, F0, CRE#cre.operand);
 	sequence -> 
 	    follow_cat(CRE#cre.operand, F0);
 	closure -> 
 	    F1 = follow_cre(CRE#cre.operand,F0),
-	    foldl(fun(I,F) ->
+	    lists:foldl(fun(I,F) ->
 			  update_followpos(F, I, CRE#cre.firstpos)
 		  end, F1, CRE#cre.lastpos);
 	leaf ->
 	    case CRE#cre.firstpos of
 		[I] ->
-		    update_followpos(F0, I, new());
+		    update_followpos(F0, I, ordsets:new());
 		[] ->
 		    F0
 	    end
@@ -532,7 +519,7 @@ follow_cat([A], F0) ->
 follow_cat([A,B|As], F0) ->
     F1 = follow_cre(A, F0),
     F2 = follow_cat([B|As],F1),
-    foldl(fun(I, F) ->
+    lists:foldl(fun(I, F) ->
 		  update_followpos(F, I, B#cre.firstpos)
 	  end, F2, A#cre.lastpos).
 
@@ -549,7 +536,7 @@ update_followpos(F, I, Set) ->
 	undefined ->
 	    [{I,Set} | F];
 	Follow ->
-	    lists:keyreplace(I, 1, F, {I,union(Set, Follow)})
+	    lists:keyreplace(I, 1, F, {I,ordsets:union(Set, Follow)})
     end.
 
     
@@ -593,13 +580,13 @@ cre({action,Action},N) ->
 
 cre({choice,REs},N) ->
     {CREs,CN,Pos} = cre_list(REs, N),
-    Nullable = any(fun(CRE) -> CRE#cre.nullable end, CREs),
-    FirstPos = foldl(fun(CRE,Pos1) ->
-			     union(Pos1,CRE#cre.firstpos)
-		     end, new(), CREs),
-    LastPos = foldl(fun(CRE,Pos1) ->
-			    union(Pos1,CRE#cre.lastpos)
-		    end, new(), CREs),
+    Nullable = lists:any(fun(CRE) -> CRE#cre.nullable end, CREs),
+    FirstPos = lists:foldl(fun(CRE,Pos1) ->
+			     ordsets:union(Pos1,CRE#cre.firstpos)
+		     end, ordsets:new(), CREs),
+    LastPos = lists:foldl(fun(CRE,Pos1) ->
+			    ordsets:union(Pos1,CRE#cre.lastpos)
+		    end, ordsets:new(), CREs),
     { #cre { operator = choice,
 	     operand  = CREs,
 	     firstpos = FirstPos,
@@ -608,25 +595,25 @@ cre({choice,REs},N) ->
 
 cre({sequence,REs},N) ->
     {CREs,CN,Pos} = cre_list(REs, N),
-    Nullable = all(fun(CRE) -> CRE#cre.nullable end, CREs),
+    Nullable = lists:all(fun(CRE) -> CRE#cre.nullable end, CREs),
     %% Note buildin from right to left!
-    FirstPos = foldr(fun(CRE,Pos1) ->
+    FirstPos = lists:foldr(fun(CRE,Pos1) ->
 			     case CRE#cre.nullable of
 				 true ->
-				     union(Pos1,CRE#cre.firstpos);
+				     ordsets:union(Pos1,CRE#cre.firstpos);
 				 false ->
 				     CRE#cre.firstpos
 			     end
-		     end, new(), CREs),
+		     end, ordsets:new(), CREs),
     %% Note buildin from left to right!
-    LastPos = foldl(fun(CRE,Pos1) ->
+    LastPos = lists:foldl(fun(CRE,Pos1) ->
 			    case CRE#cre.nullable of
 				true ->
-				    union(Pos1,CRE#cre.lastpos);
+				    ordsets:union(Pos1,CRE#cre.lastpos);
 				false ->
 				    CRE#cre.lastpos
 			    end
-		    end, new(), CREs),
+		    end, ordsets:new(), CREs),
     { #cre { operator = sequence,
 	     operand  = CREs,
 	     firstpos = FirstPos,
@@ -649,7 +636,7 @@ cre_list([RE|REs], N, CREs, Pos0) ->
     {CRE,N1,Pos1} = cre(RE, N),
     cre_list(REs, N1, [CRE|CREs],Pos0++Pos1);
 cre_list([], N, CREs, Pos) ->
-    {reverse(CREs), N, Pos}.
+    {lists:reverse(CREs), N, Pos}.
 
 %%
 %% Generate DFA for DTD rule
@@ -674,7 +661,7 @@ build_dfa(RE, Symbols) ->
     NFA = build_nfa(RE, 1),
     ?dbg("NFA contains ~w states,i=~p\n~p\n", 
 	 [length(NFA#fa.states), NFA#fa.init,NFA#fa.states]),
-    NFA_Array = list_to_tuple(keysort(#fa_state.id, NFA#fa.states)),
+    NFA_Array = list_to_tuple(lists:keysort(#fa_state.id, NFA#fa.states)),
     DFA = build_dfa(NFA_Array, NFA#fa.init, Symbols),
     ?dbg("DFA contains ~w states i=~p\n~p\n", 
 	 [length(DFA#fa.states),DFA#fa.init,DFA#fa.states]),
@@ -684,14 +671,14 @@ build_dfa(RE, Symbols) ->
     DFA1.
 
 symbols(RE) ->
-    ordsets:to_list(symbols(RE, new())).
+    ordsets:to_list(symbols(RE, ordsets:new())).
 
 symbols({choice,REs}, Symbols) ->
-    foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
+    lists:foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
 symbols({all,REs}, Symbols) ->
-    foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
+    lists:foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
 symbols({sequence,REs}, Symbols) ->
-    foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
+    lists:foldl(fun(RE,S) -> symbols(RE,S) end, Symbols, REs);
 symbols({closure,RE}, Symbols) ->
     symbols(RE,Symbols);
 symbols({pclosure,RE}, Symbols) ->
@@ -701,15 +688,15 @@ symbols({optional,RE}, Symbols) ->
 symbols(?epsilon, Symbols) ->  Symbols;
 symbols(?any, Symbols) ->    Symbols;
 symbols(?dot, Symbols) ->
-    add_element(?dot,Symbols); %% Is this it?
+    ordsets:add_element(?dot,Symbols); %% Is this it?
 symbols({action,Action},Symbols) -> 
-    add_element({action,Action}, Symbols);
+    ordsets:add_element({action,Action}, Symbols);
 symbols(?pcdata, Symbols) ->
-    add_element(?pcdata, Symbols);
+    ordsets:add_element(?pcdata, Symbols);
 symbols({element,E}, Symbols) ->
-    add_element(E, Symbols);
+    ordsets:add_element(E, Symbols);
 symbols({char,C}, Symbols) ->
-    add_element(C, Symbols).
+    ordsets:add_element(C, Symbols).
 
 %% Create and NFA from a RegExp
 make_nfa(RE) ->
@@ -812,15 +799,15 @@ build_or_nfa([RE|REs], N0, Fs, NFA0, FsList, EsList) ->
     {NFA1,N1,Es1} = build_nfa(RE, N0+1, N0, NFA0),
     build_or_nfa(REs, N1, Fs, NFA1, [N0|FsList], [Es1|EsList]);
 build_or_nfa([], Es, Fs, NFA0, FsList, EsList) ->
-    Es1 = map(fun(Fi) -> 
-		      #fa_edge{id=?epsilon,target=Fi} 
-	      end,
-	      FsList),
+    Es1 = lists:map(fun(Fi) -> 
+			    #fa_edge{id=?epsilon,target=Fi} 
+		    end,
+		    FsList),
     {[#fa_state { id=Fs, edges=Es1} |
-      map(fun(Ei) ->
-		  #fa_state { id=Ei, edges=
-			      [#fa_edge{id=?epsilon,target=Es}]}
-	  end, EsList)]++NFA0,
+      lists:map(fun(Ei) ->
+			#fa_state { id=Ei, edges=
+					[#fa_edge{id=?epsilon,target=Es}]}
+		end, EsList)]++NFA0,
      Es+1, Es}.
 		 
 %% r1&r2&..&rn (any order)
@@ -862,7 +849,7 @@ build_dfa([U0={Uk,U}|Us0], N0, Ms, NFA_Array, Symbols) ->
 		  },
     build_dfa(Us1, N1, [{Uk,M}|Ms], NFA_Array, Symbols);
 build_dfa([], _N, Ms, _NFA_Array, _) -> 
-    map(fun({_,M}) -> M end, Ms).
+    lists:map(fun({_,M}) -> M end, Ms).
 
 %% build_dfa(Symbols, [NfaState], [Unmarked], NextState, [Transition],
 %%           [Marked], NFA) ->
@@ -876,13 +863,13 @@ build_dfa([Sym|Symbols], Set, Us, N, Es, Ms, NFA_Array) ->
     ?dbg("build_dfa: Sym: ~p\n", [Sym]),
     case eclosure(move(Set, Sym, NFA_Array), NFA_Array) of
 	S when S /= [] ->
-	    case keysearch(S, 1, Us) of
+	    case lists:keysearch(S, 1, Us) of
 		{value,{_,#fa_state{id=T}}} ->
 		    build_dfa(Symbols, Set, Us, N,
 			      [#fa_edge{id=Sym,target=T}|Es], Ms, 
 			      NFA_Array);
 		false ->
-		    case keysearch(S, 1, Ms) of
+		    case lists:keysearch(S, 1, Ms) of
 			{value,{_,#fa_state{id=T}}} ->
 			    build_dfa(Symbols,Set,Us,N,
 				      [#fa_edge{id=Sym,target=T}|Es],Ms,
@@ -911,8 +898,8 @@ eclosure(Sts, NFA) ->
 eclosure([St|Sts], NFA, Ec) ->
     #fa_state{edges=Es} = element(St, NFA),
     eclosure([ N || #fa_edge{id=?epsilon,target=N} <- Es,
-		    not is_element(N, Ec) ] ++ Sts,
-	     NFA, add_element(St, Ec));
+		    not ordsets:is_element(N, Ec) ] ++ Sts,
+	     NFA, ordsets:add_element(St, Ec));
 eclosure([], _NFA, Ec)-> Ec.
 
 %% Given a list of states and a symbol C,
@@ -952,10 +939,10 @@ accept([], _NFA) -> false.
 %%                   to id='!',action=Action,target=Sj
 %%
 afa_from_dfa(DFA) ->
-    Es = flatmap(
+    Es = lists:flatmap(
 	   fun(S) ->
 		   Si = S#fa_state.id,
-		   map(
+		   lists:map(
 		     fun(E = #fa_edge { id={'!',Action}}) ->
 			     E#fa_edge { source=Si, id='!', action=Action};
 			(E) ->
@@ -971,7 +958,7 @@ afa_from_dfa(DFA) ->
     %% reconstruct the DFA again
     GEs3 = key_group(Es1, #fa_edge.source),
     States =
-	foldl(
+	lists:foldl(
 	  fun(S,SAcc) ->
 		  Sj = S#fa_state.id,
 		  case element(Sj,INFO2) of
@@ -1052,7 +1039,7 @@ afa_merge_b([E=#fa_edge { id='!',source=A,target=B,action=EAs}|Es1],I0,Es2) ->
        true ->
 	    Fs0 = out_edges(B, Es1, Es2),
 	    {Gs,Fs,I1} =
-		foldl(
+		lists:foldl(
 		  fun(F=#fa_edge{id=Fid,action=FAs,target=C},{Gs,Fs,I1}) ->
 			  GAs = if Fid == '!' -> EAs ++ FAs;
 				   true -> [save|EAs]++[restore|FAs]
@@ -1094,7 +1081,7 @@ fmt_edge(#fa_edge{id=ID, action=As,source=S, target=T}) ->
 
 %% Create degree info
 init_afa_info(States, Es) ->
-    INFO0 = list_to_tuple(map(fun(S) -> {0,0,S#fa_state.accept} end, States)),
+    INFO0 = list_to_tuple(lists:map(fun(S) -> {0,0,S#fa_state.accept} end, States)),
     update_afa_info(Es, INFO0).
 
 %% Update degree info for all edges
@@ -1125,7 +1112,7 @@ del_edge_info(#fa_edge { source=A, target=B }, I0) ->
 %%    in_edges(S, Es1) ++ in_edges(S, Es2).
 
 %% in_edges(S, Es) ->
-%%    foldl(fun(E,SEs) ->
+%%    lists:foldl(fun(E,SEs) ->
 %%		  if E#fa_edge.target == S -> [E|SEs];
 %%		     true -> SEs
 %%		  end
@@ -1135,7 +1122,7 @@ out_edges(S, Es1, Es2) ->
     out_edges(S, Es1) ++ out_edges(S, Es2).
 
 out_edges(S, Es) ->
-    foldl(fun(E,SEs) ->
+    lists:foldl(fun(E,SEs) ->
 		  if E#fa_edge.source == S -> [E|SEs];
 		     true -> SEs
 		  end
@@ -1213,7 +1200,7 @@ remap_fa(FA) ->
     
 %% remap all edges for all states 
 remap_fa(States, Map) ->
-    map(
+    lists:map(
       fun(D = #fa_state { edges = Edges}) ->
 	      D#fa_state { edges = remap_edges(Edges, Map) }
       end, States).
@@ -1227,7 +1214,7 @@ renumber_states([D|States], NewN, Map, PFA) ->
     renumber_states(States, NewN+1,[{D#fa_state.id,NewN}|Map],
 		    [D#fa_state{id=NewN}|PFA]);
 renumber_states([], _NewN, Map, PFA) -> 
-    {reverse(PFA),Map}.
+    {lists:reverse(PFA),Map}.
 
 remap_edges([E=#fa_edge{target=Sj}|Es], Map) ->
     [E#fa_edge { target=remap_state(Sj, Map) } | remap_edges(Es,Map)];

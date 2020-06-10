@@ -7,12 +7,6 @@
 
 -include("../include/makeup.hrl").
 
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -define(toupper(C), if (C) >= $a, (C) =< $z -> ((C)-$a)+$A; true -> (C) end).
 
 -export([file/1, file/2]).

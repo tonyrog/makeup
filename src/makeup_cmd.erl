@@ -5,14 +5,6 @@
 
 -module(makeup_cmd).
 
--import(lists, [reverse/1,map/2, foldl/3, foreach/2, member/2,append/1]).
-
--ifdef(debug).
--define(dbg(Fmt,As), io:format("~s: "++(Fmt),[?MODULE |(As)])).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -include("../include/makeup.hrl").
 
 -export([verify/0, verify/1]).
@@ -103,7 +95,7 @@ verify_opts(Args, Opts, XOpts) ->
 	['\'\'' | Args1] -> %% ignore special qarg (needed to pass PubID)
 	    verify_opts(Args1, Opts, XOpts);
 	[File] ->
-	    {atom_to_list(File), reverse(Opts), XOpts};
+	    {atom_to_list(File), lists:reverse(Opts), XOpts};
 	_ ->
 	    verify_usage()
     end.
@@ -292,10 +284,10 @@ config1([options,ID|_Args]) ->
     case makeup_dtd_srv:public_entry(PubId) of
 	{ok,_Path,{_PubId,_Url,Opts,_Mod,_File}} ->
 	    io:format("~s\n", 
-		      [map(fun({icase,true}) -> "-I ";
-			      ({icase,false}) -> "-i ";
-			      (_) -> ""
-			   end, Opts)]),
+		      [lists:map(fun({icase,true}) -> "-I ";
+				    ({icase,false}) -> "-i ";
+				    (_) -> ""
+				 end, Opts)]),
 	    halt(0);
 	_ ->
 	    halt(1)
@@ -417,7 +409,7 @@ xml2wbxml_opts(Args, Opts, XOpts) ->
 	['debug' | Args1] ->
 	    xml2wbxml_opts(Args1, Opts, [{debug,true}|XOpts]);
 	[File] ->
-	    {atom_to_list(File), reverse(Opts), XOpts};
+	    {atom_to_list(File), lists:reverse(Opts), XOpts};
 	_ ->
 	    xml2wbxml_usage()
     end.
@@ -490,7 +482,7 @@ wbxml2xml_opts(Args, Opts, XOpts) ->
 	['\'\'' | Args1] -> %% ignore special qarg (needed to pass PubID)
 	    wbxml2xml_opts(Args1, Opts, XOpts);
 	[File] ->
-	    {atom_to_list(File), reverse(Opts), XOpts};
+	    {atom_to_list(File), lists:reverse(Opts), XOpts};
 	_ ->
 	    wbxml2xml_usage()
     end.
@@ -542,7 +534,7 @@ getopt_list(Opt, [_|Opts], Acc, Default) ->
 getopt_list(_Opt, [], [], Default) ->
     Default;
 getopt_list(_Opt, [], Acc, _Default) ->
-    reverse(Acc).
+    lists:reverse(Acc).
 
 
 

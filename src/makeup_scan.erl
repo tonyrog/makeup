@@ -14,15 +14,6 @@
 
 -include("../include/makeup.hrl").
 
--define(dbgi(Fmt,As), io:format((Fmt),(As))).
-
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--compile(export_all).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -define(MAKEUP_STACK, '$makeup_stack').
 
 -define(DEFAULT_CHUNK_SIZE, 512).

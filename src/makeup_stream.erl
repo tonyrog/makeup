@@ -16,12 +16,6 @@
 	 section/4, comment/3,
 	 charref/3]).
 
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -record(cstate,
 	{
 	  text="",    %% current text value

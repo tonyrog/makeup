@@ -23,14 +23,6 @@
 
 -include("../include/makeup.hrl").
 
--define(dbgi(Fmt,As), io:format((Fmt),(As))).
-
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
 -define(DEFAULT_CBMOD, makeup_tags).
 
 %%

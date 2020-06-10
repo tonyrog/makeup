@@ -19,13 +19,6 @@
 -export([file/1, file/2, file/3]).
 -export([string/1, string/2, string/3]).
 
--ifdef(debug).
--define(dbg(Fmt,As), io:format((Fmt),(As))).
--else.
--define(dbg(Fmt,As), ok).
--endif.
-
-
 -record(cstate,
 	{
 	  opts,               %% stored options

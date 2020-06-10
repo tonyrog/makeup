@@ -6,6 +6,12 @@
 -ifndef(MAKEUP_HRL).
 -define(MAKEUP_HRL, true).
 
+-ifdef(debug).
+-define(dbg(Fmt,As), io:format("~s: "++(Fmt),[?MODULE |(As)])).
+-else.
+-define(dbg(Fmt,As), ok).
+-endif.
+
 %% With Tag | [Ns|Tag]
 -define(is_tag(T), is_atom((T)); is_atom(hd((T))),is_atom(tl((T)))).
 -define(is_upper(C), (C)>=$A, C=<$Z).
