@@ -5,10 +5,6 @@
 
 -module(makeup_ascii).
 
--rcsid("$Id: makeup_ascii.erl,v 1.1 2006/03/06 19:47:32 tony Exp $\n").
-
--vsn("$Revision: 1.1 $ ").
-
 -export([input/1, output/1]).
 
 %%
@@ -18,9 +14,9 @@
 %%     {Valid, [code()], Continuation/1}
 %%
 %%
-input(Bin) when binary(Bin) ->
+input(Bin) when is_binary(Bin) ->
     {true, binary_to_list(Bin), fun input/1};
-input(List) when list(List) ->
+input(List) when is_list(List) ->
     {true, List, fun input/1}.
 
 output(Us) ->

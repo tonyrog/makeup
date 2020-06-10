@@ -5,18 +5,38 @@
 
 -module(makeup_xsd).
 
--rcsid("$Id: makeup_xsd.erl,v 1.7 2009/05/19 15:30:21 marcusj Exp $\n").
-
--vsn("$Revision: 1.7 $ ").
-
--compile(export_all).
-
 -export([file/1, file_xsd/1, file_makeup/1, file_makeup/2]).
 -export([xml_xsd/1, xml_makeup/1, xsd_makeup/1]).
 -export([load/2]).
+-export([gen_coders/5]).
+-export([gen_hrl/3]).
+-export([gen_types/4]).
+-export([gen_def/3]).
+-export([gen_fields/2]).
+-export([xml_makeup/2]).
 
+-export([encode_string/1]).
+-export([encode_int/1]).
+-export([encode_byte/1]).
+-export([encode_short/1]).
+-export([encode_boolean/1]).
+-export([decode_string/4]).
+-export([decode_int/4]).
+-export([decode_byte/4]).
+-export([decode_short/4]).
+-export([decode_boolean/4]).
+-export([decode_string/1]).
+-export([decode_int/1]).
+-export([decode_byte/1]).
+-export([decode_short/1]).
+-export([decode_boolean/1]).
 
--import(lists, [reverse/1, append/1, foreach/2, map/2, foldl/3]).
+-export([mk_annotation/1]).
+-export([mk_comment/1]).
+-export([mk_comment_xml/1]).
+-export([xsd_cs/2]).
+-export([attr/2]).
+-export([attr_am/2]).
 
 -include("../include/makeup.hrl").
 -include("../include/makeup_xsd.hrl").
@@ -76,7 +96,7 @@ gen_coders(HrlFileName,Types,Elements,Nss,Opts) ->
     gen_coders([],HrlFileName,Types,Types,Elements,Nss,Opts).
 
 gen_coders(Fds,_,[],_,_,_,_) ->
-    foreach(fun({_,Fd}) -> file:close(Fd) end, Fds);
+    lists:foreach(fun({_,Fd}) -> file:close(Fd) end, Fds);
 gen_coders(Fds,HrlFileName,[{[Ns|_Type]=NsType,_}=Def|T],Types,Elements,Nss,Opts) ->
     io:format("gen_coders:~p\n",[Def]),
     {Fd,Fds1} = case lists:keysearch(Ns,1,Fds) of
@@ -105,7 +125,7 @@ gen_encode(Fd,{[_Ns|EType],Def}=_Type,Types,Elements) ->
     FunctionName = "encode_" ++ atom_to_list(EType),
     Record = "'" ++ atom_to_list(EType) ++ "'",
     Fields = fields_def(Def,Types),
-    Map = map(fun(F) -> {value,{_,{ref,Ref}}} = lists:keysearch(F,1,Elements), {F,makeup:name_ns(Ref,true)} end,Fields),
+    Map = lists:map(fun(F) -> {value,{_,{ref,Ref}}} = lists:keysearch(F,1,Elements), {F,makeup:name_ns(Ref,true)} end,Fields),
     FormatedFields = lists:reverse(format_fields(Map,Record,[])),
     io:format(Fd, "\n\n%% ~s : ~s() => soap encoded\n",[FunctionName,atom_to_list(EType)]),
     io:format(Fd, FunctionName ++ "(Rec) when is_record(Rec," ++ Record ++ ") ->\n",[]),
@@ -285,7 +305,7 @@ mk(XSD,St0,Opts) ->
     St = St0#xsd_state { tns = Target, ns  = Ns },
     io:format("Target=~p, Ns=~p\n", [Target, Ns]),
     %% scan declaraions
-    foreach(
+    lists:foreach(
       fun(E) ->
 	      if is_record(E,xsd_include) ->
 		      io:format("include: ~s\n", 
@@ -304,7 +324,7 @@ mk(XSD,St0,Opts) ->
       end, XSD#xsd_schema.decl),
     %% scan elems
     {_,St1} =
-	foldl(
+	lists:foldl(
 	  fun(E,{_,St1}) ->
 		  if is_record(E,xsd_simpleType) ->
 			  mk_simpleType(E,St1);
@@ -442,7 +462,7 @@ mk_complexContent(E,St) ->
 %% Generate sequence  E1 , E2 , E3 ... , En
 mk_sequence(E, St) ->
     {Ts,St1} = 
-	foldl(
+	lists:foldl(
 	  fun(C,{Ts,St1}) when is_record(C, xsd_element) ->
 		  {T,St2} = mk_element(C, St1),
 		  {[T|Ts], St2};
@@ -460,12 +480,12 @@ mk_sequence(E, St) ->
 		  {[T|Ts], St2}
 	  end, {[],St}, E#xsd_sequence.content),
     %% ADD id,minOccurs,maxOccurs,
-    {{sequence, min_max(E), reverse(Ts)}, St1}.
+    {{sequence, min_max(E), lists:reverse(Ts)}, St1}.
 
 %% Generate choice  E1 | E2 | E3 ... | En
 mk_choice(E, St) ->
     {Ts,St1} = 
-	foldl(
+	lists:foldl(
 	  fun(C,{Ts,St1}) when is_record(C, xsd_element) ->
 		  {T,St2} = mk_element(C, St1),
 		  {[T|Ts], St2};
@@ -480,7 +500,7 @@ mk_choice(E, St) ->
 		  {[T|Ts], St2}
 	  end, {[],St}, E#xsd_choice.content),
     %% ADD id,minOccurs,maxOccurs,
-    {{choice,min_max(E),reverse(Ts)}, St1}.
+    {{choice,min_max(E),lists:reverse(Ts)}, St1}.
 
 mk_group(E, St) ->
     if E#xsd_group.content == undefined ->
@@ -493,12 +513,12 @@ mk_group(E, St) ->
 %% Generate all  E1 & E2 & E3 ... & En
 mk_all(E, St) ->
     {Ts,St1} = 
-	foldl(
+	lists:foldl(
 	  fun(C,{Ts,St1}) when is_record(C, xsd_element) ->
 		  {T,St2} = mk_element(C, St1),
 		  {[T|Ts], St2}
 	  end, {[],St}, E#xsd_all.content),
-    {{all,min_max(E),reverse(Ts)}, St1}.
+    {{all,min_max(E),lists:reverse(Ts)}, St1}.
 
 %% Generate: any  .  (=ANY)
 mk_any(E, St) ->
@@ -520,12 +540,12 @@ mk_union(E, St) ->
 	    {{union,{ref,E#xsd_union.memberTypes}}, St};
        is_list(E#xsd_union.content) ->
 	    {Ts,St1} = 
-		foldl(
+		lists:foldl(
 		  fun(C,{Ts,St1}) when is_record(C, xsd_simpleType) ->
 			  {T,St2} = mk_simpleType(C, St1),
 			  {[T|Ts], St2}
 		  end,{[],St}, E#xsd_union.content),
-	    {{union,reverse(Ts)}, St1}
+	    {{union,lists:reverse(Ts)}, St1}
     end.
 
 %% Generate restriction: (simpleType | mgs | group)?
@@ -574,7 +594,7 @@ mk_cs(E,St) when is_record(E, xsd_sequence) ->
 mk_annotation(undefined) ->
     "";
 mk_annotation(C) ->
-    map(fun(A) when is_record(A, xsd_appinfo) ->
+    lists:map(fun(A) when is_record(A, xsd_appinfo) ->
 		case A#xsd_appinfo.info of
 		    [{'#PCDATA',Data}] ->
 			mk_comment(Data);
@@ -591,7 +611,7 @@ mk_annotation(C) ->
 	end, C#xsd_annotation.content).
 
 mk_comment(Data) ->
-    map(fun(Line) -> ["%% ", Line, "\n"] end,
+    lists:map(fun(Line) -> ["%% ", Line, "\n"] end,
 	string:tokens(Data, "\n")).
 
 mk_comment_xml(Data) ->
@@ -606,8 +626,6 @@ min_max(E) when is_record(E,xsd_choice) ->
     min_max(E#xsd_choice.minOccurs, E#xsd_choice.maxOccurs);
 min_max(E) when is_record(E,xsd_group) ->
     min_max(E#xsd_group.minOccurs, E#xsd_group.maxOccurs);
-min_max(E) when is_record(E,xsd_all) ->
-    min_max(E#xsd_all.minOccurs, E#xsd_all.maxOccurs);
 min_max(E) when is_record(E,xsd_all) ->
     min_max(E#xsd_all.minOccurs, E#xsd_all.maxOccurs);
 min_max(E) when is_record(E,xsd_any) ->
@@ -711,7 +729,7 @@ xsd_schema_decl(Cs, Ns, Decl) ->
 	    X = xsd_annotation(CCs,Ns,As),
 	    xsd_schema_decl(Cs1,Ns,[X|Decl]);
 	_ ->
-	    {reverse(Decl), Cs}
+	    {lists:reverse(Decl), Cs}
     end.
 %%
 %% ( (<simpleType> | <complexType> | <element> | <attribute> |
@@ -761,7 +779,7 @@ xsd_schema_elems(Cs,Ns,Elems) ->
 	    X2 = X#xsd_notation { post_annotation = A },
 	    xsd_schema_elems(Cs2,Ns,[X2|Elems]); 
 	_ ->
-	    {reverse(Elems), Cs}
+	    {lists:reverse(Elems), Cs}
     end.
 %%
 %% <!ELEMENT %simpleType;
@@ -777,7 +795,7 @@ xsd_simpleType_list(Cs,Ns,Acc) ->
 	    T = xsd_simpleType(CCs,Ns,As),
 	    xsd_simpleType_list(Cs1,Ns,[T|Acc]);
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 
 xsd_simpleType_opt(Cs,Ns) ->
@@ -949,9 +967,9 @@ xsd_attrDecls(Cs,Ns,Acc) ->
 	    xsd_attrDecls(Cs1, Ns, [A|Acc]);
 	[{[Ns|anyAttribute],As,CCs}|Cs1] ->
 	    A = xsd_anyAttribute(CCs,Ns,As),
-	    {reverse([A|Acc]),Cs1};
+	    {lists:reverse([A|Acc]),Cs1};
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 %%
 %% <!ELEMENT %attribute; ((%annotation;)?, (%simpleType;)?)>
@@ -982,7 +1000,7 @@ xsd_elements(Cs, Ns, Acc) ->
 	    E = xsd_element(CCs,Ns,As),
 	    xsd_elements(Cs1,Ns,[E|Acc]);
 	_ ->
-	    {reverse(Acc), Cs}
+	    {lists:reverse(Acc), Cs}
     end.
 
 xsd_element(Cs, Ns, As) ->
@@ -1037,7 +1055,7 @@ xsd_choice_list(Cs, Ns, Acc) ->
 	    Choice = xsd_any(CCs,Ns,As),
 	    xsd_choice_list(Cs1, Ns, [Choice|Acc]);
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 
 
@@ -1069,7 +1087,7 @@ xsd_sequence_list(Cs, Ns, Acc) ->
 	    X = xsd_any(CCs,Ns,As),
 	    xsd_sequence_list(Cs1, Ns, [X|Acc]);
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 
 
@@ -1130,7 +1148,7 @@ xsd_key_list(Cs, Ns, Acc) ->
 	    K = xsd_keyref(CCs,Ns,As),
 	    xsd_key_list(Cs1,Ns,[K|Acc]);
 	_ ->
-	    {reverse(Acc), Cs}
+	    {lists:reverse(Acc), Cs}
     end.
 
 xsd_unique(Cs,Ns,As) ->
@@ -1172,7 +1190,7 @@ xsd_field_list(Cs,Ns,Acc) ->
 	    F = xsd_field(CCs,Ns,As),
 	    xsd_field_list(Cs1,Ns,[F|Acc]);
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 
 xsd_field(Cs,Ns,As) ->
@@ -1226,7 +1244,7 @@ xsd_redefine_list(Cs, Ns, Acc) ->
 	    X = xsd_group(CCs,Ns,As),
 	    xsd_redefine_list(Cs1,Ns,[X|Acc]);
 	_ ->
-	    {reverse(Acc), Cs}
+	    {lists:reverse(Acc), Cs}
     end.
 
 %% %notation; (%annotation;)?
@@ -1242,7 +1260,7 @@ xsd_annotation_list(Cs, Ns, Acc) ->
 	    X = xsd_annotation(CCs,Ns,As),
 	    xsd_annotation_list(Cs1,Ns,[X|Acc]);
 	_ ->
-	    {reverse(Acc), Cs}
+	    {lists:reverse(Acc), Cs}
     end.
 
 %% (annotation)?
@@ -1270,7 +1288,7 @@ xsd_annotation_1(Cs,Ns,Acc) ->
 	    Doc = Doc0#xsd_documentation { doc = Any },
 	    xsd_annotation_1(Cs1,Ns,[Doc|Acc]);
 	_ ->
-	    {reverse(Acc),Cs}
+	    {lists:reverse(Acc),Cs}
     end.
 
 %% <restriction> ::=  
@@ -1378,7 +1396,7 @@ xsd_facet_list(Cs, Ns, Acc) ->
 	    F = xsd_facet(CCs,Ns,As,xsd_minLength),
 	    xsd_facet_list(Cs1, Ns, [F|Acc]);
 	_ ->
-	    {reverse(Acc), Cs}
+	    {lists:reverse(Acc), Cs}
     end.
 
 xsd_facet(Cs,Ns,As,Name) ->
@@ -1430,7 +1448,7 @@ keysearch_and_delete(Key,Pos,List) ->
     keysearch_and_delete(Key,Pos,List,[]).
 
 keysearch_and_delete(Key,Pos,[E|Es],Acc) when element(Pos,E) == Key ->
-    {value,E,reverse(Acc)++Es};
+    {value,E,lists:reverse(Acc)++Es};
 keysearch_and_delete(Key,Pos,[E|Es],Acc) ->
     keysearch_and_delete(Key,Pos,Es,[E|Acc]);
 keysearch_and_delete(_Key,_Pos,[],_Acc) ->

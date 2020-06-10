@@ -5,10 +5,6 @@
 
 -module(makeup_scan).
 
--rcsid("$Id: makeup_scan.erl,v 1.4 2007/02/04 09:21:36 tony Exp $\n").
-
--vsn("$Revision: 1.4 $ ").
-
 -export([file/1, file/2, file/3]).
 -export([ifile/2, istring/2, ioptions/2, ilevel/0]).
 -export([string/1, string/2, string/3]).

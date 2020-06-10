@@ -5,10 +5,6 @@
 
 -module(makeup_dtd_gen).
 
--rcsid("$Id: makeup_dtd_gen.erl,v 1.10 2007/09/04 07:31:10 per Exp $\n").
-
--vsn("$Revision: 1.10 $ ").
-
 -include("../include/makeup.hrl").
 
 -ifdef(debug).
@@ -22,9 +18,6 @@
 -export([file/1, file/2]).
 -export([compile/1, compile/2]).
 
--compile(export_all).
--import(lists, [map/2, foreach/2, reverse/1]).
-
 compile(File) ->
     compile(File,[]).
 
@@ -35,7 +28,7 @@ stop(_File, {'EXIT',Reason}) ->
     io:format("dtd_compile: crash: ~p\n", [Reason]),
     halt(1);
 stop(File, {error,ReasonList}) when is_list(ReasonList) -> 
-    foreach(
+    lists:foreach(
       fun({Line,{function_clause,Crash}}) when is_integer(Line) ->
 	      io:format("~s:~w: crash ~999p\n",
 			[File, Line, Crash]);
@@ -52,7 +45,7 @@ stop(File, {error,ReasonList}) when is_list(ReasonList) ->
 	 (Error) ->
 	      io:format("~s: error ~999p\n",
 			[File, Error])
-      end, reverse(ReasonList)),
+      end, lists:reverse(ReasonList)),
     halt(1);
 stop(_File, {error,Reason}) ->     
     io:format("dtd_compile: error: ~p\n", [Reason]),
@@ -140,13 +133,12 @@ emit_hrl(O_HrlFile, Prefix, ElemList, Opts) ->
 	    Error
     end.
 
-
 emit_hrl_header(Fd) ->
     io:format(Fd, "%% DTD record module generate by: ~s\n"
 	          "%% Version: ~s\n"
 	          "%%    Date: ~s\n",
 	      [?MODULE, 
-	       ?MAKEUP_VSN, 
+	       makeup:vesion(),
 	       format_date(calendar:universal_time())]).
 
 emit_erl_header(Fd) ->
@@ -154,7 +146,7 @@ emit_erl_header(Fd) ->
 	          "%% Version: ~s\n"
 	          "%%    Date: ~s\n",
 	      [?MODULE, 
-	       ?MAKEUP_VSN, 
+	       makeup:version(),
 	       format_date(calendar:universal_time())]).
 
 emit_decls(Fd, O_Mod) ->
@@ -182,7 +174,7 @@ emit_pubid(Fd, Opts) ->
 
 emit_records(Fd, Es, Pfx, _Opts) ->
     Indent = "        ",
-    foreach(
+    lists:foreach(
       fun(E) ->
 	      RName = list_to_atom(Pfx ++ 
 				   makeup_re:format_tag(E#makeup_element.name)),
@@ -239,10 +231,10 @@ ns([Xs|_]) ->
 ns(_) ->
     ''.
 
-mlist([]) -> "";
-mlist([Name]) -> mname(Name);
-mlist([Name|Ns]) ->
-    [mname(Name),",",mlist(Ns)].
+%% mlist([]) -> "";
+%% mlist([Name]) -> mname(Name);
+%% mlist([Name|Ns]) ->
+%%    [mname(Name),",",mlist(Ns)].
 
 alist(_Xs,[]) -> "";
 alist(Xs, [Name]) -> aname(Xs,Name);
@@ -348,7 +340,7 @@ emit_rule(Fd, []) ->
 
 emit_state(Fd, Es, _Opts) ->
     DFAs = 
-	map(
+	lists:map(
 	  fun(E) -> 
 		  Name = E#makeup_element.name,
 		  Rule = E#makeup_element.rule,
@@ -357,7 +349,7 @@ emit_state(Fd, Es, _Opts) ->
 		  {Name, DFA, Rule}
 	  end, Es),
     ?dbg("DFAs=~p\n", [DFAs]),
-    foreach(fun({Name,DFA,Rule}) ->
+    lists:foreach(fun({Name,DFA,Rule}) ->
 		    ?dbg("RULE ~p=~p\n", [Name,Rule]),
 		    io:format(Fd, "%% ~s : ~s\n", 
 			      [makeup_re:format_tag(Name),
@@ -367,11 +359,11 @@ emit_state(Fd, Es, _Opts) ->
 	    end, DFAs),
     io:format(Fd, "state_init(_) -> undefined.\n\n",[]),
 
-    foreach(
+    lists:foreach(
       fun({Name,DFA,_}) ->
-	      foreach(
+	      lists:foreach(
 		fun(#fa_state { id=Si,edges=Edges}) ->
-			foreach(
+			lists:foreach(
 			  fun (#fa_edge{id='_',action=[],target=Sj}) ->
 				  io:format(Fd, "state(~s,~w, _) -> ~w;\n",
 					    [tname(Name), Si, Sj]);
@@ -390,9 +382,9 @@ emit_state(Fd, Es, _Opts) ->
 
     io:format(Fd, "state(_, _, _) -> undefined.\n\n", []),
 
-    foreach(
+    lists:foreach(
       fun({Name,DFA,_}) ->
-	      foreach(
+	      lists:foreach(
 		fun(#fa_state { id=N, accept=Accept}) ->
 			io:format(Fd, "state_accept(~s, ~w) -> ~p;\n",
 				  [tname(Name),N,Accept])
@@ -465,7 +457,7 @@ emit_start_tag(Fd, []) ->
     io:format(Fd, "start_tag_optional(_) -> undefined.\n\n",[]).
 
 emit_attributes(Fd, [E|Es]) ->
-    As = map(fun(A) -> A#makeup_attribute.name end, E#makeup_element.attr),
+    As = lists:map(fun(A) -> A#makeup_attribute.name end, E#makeup_element.attr),
     Ns = ns(E#makeup_element.name),
     UseTName = lists:foldl(fun([Xs|_],_Bool) when Xs==Ns -> false;
 			      ([xmlns|Xs],_Bool) when Xs==Ns -> false;

@@ -5,10 +5,6 @@
 
 -module(makeup_iso_8859_2).
 
--rcsid("$Id: makeup_iso_8859_2.erl,v 1.1 2006/06/02 14:48:39 tony Exp $\n").
-
--vsn("$Revision: 1.1 $ ").
-
 -export([input/1, output/1]).
 
 -include("makeup_utf.hrl").
@@ -19,9 +15,9 @@
 %%     {Valid, [code()], Continuation/1}
 %%
 %%
-input(Bin) when binary(Bin) ->
+input(Bin) when is_binary(Bin) ->
     input(binary_to_list(Bin),[],true);
-input(List) when list(List) ->
+input(List) when is_list(List) ->
     input(List,[],true).
 
 input([C|Cs], Acc, Valid) when C < 16#7F ->

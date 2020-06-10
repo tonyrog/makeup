@@ -1,5 +1,7 @@
 -module(makeup_soapenc).
--compile(export_all).
+
+-export([find_record/2]).
+-export([decode_Array/4]).
 
 find_record(Body, ID) ->
     Rec = [{_,Attr,_}] = lists:filter(fun({_,A,_}) -> lists:member({id,ID},A) end,Body),

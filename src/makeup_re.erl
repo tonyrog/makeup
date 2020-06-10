@@ -5,10 +5,6 @@
 
 -module(makeup_re).
 
--rcsid("$Id: makeup_re.erl,v 1.9 2007/02/06 21:59:55 tony Exp $\n").
-
--vsn("$Revision: 1.9 $ ").
-
 -import(lists, [member/2,reverse/1,seq/2,append/1]).
 -import(lists, [foreach/2,map/2,flatmap/2,foldl/3,foldr/3, filter/2]).
 -import(lists, [all/2, any/2]).

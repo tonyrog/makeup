@@ -5,8 +5,6 @@
 
 -module(makeup).
 
--compile(export_all).
-
 -export([file/1, file/2, file/3]).
 -export([ifile/2, istring/2, ioptions/2, ilevel/0]).
 -export([string/1, string/2, string/3]).
@@ -17,7 +15,11 @@
 -export([format_attr_name/1]).
 -export([keyval/1]).
 
--import(lists, [reverse/1,map/2, foldl/3, foreach/2, member/2,append/1]).
+-export([version/0]).
+-export([perf/1]).
+-export([perff/1, perff/2]).
+-export([cvtcase/2, tolower/1]).
+-export([name_ns/2]).
 
 -include("../include/makeup.hrl").
 
@@ -39,19 +41,28 @@ perf(File) ->
     
 perf(File,Opts) ->
     {ok,Bin} = file:read_file(File),
-    T0 = now(),
+    T0 = erlang:monotonic_time(),
     {ok,_Doc} = makeup_scan:string(Bin,Opts),
-    T1 = now(),
-    {ok,timer:now_diff(T1,T0)}.
+    T1 = erlang:monotonic_time(),
+    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
+    {ok,Time}.
 
 perff(File) ->
     perff(File,[]).
 
 perff(File,Opts) ->
-    T0 = now(),
+    T0 = erlang:monotonic_time(),
     {ok,_Doc} = makeup_scan:file(File,Opts),
-    T1 = now(),
-    {ok,timer:now_diff(T1,T0)}.
+    T1 = erlang:monotonic_time(),
+    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
+    {ok,Time}.
+
+%% 
+version() ->
+    case application:get_key(makeup, vsn) of
+	{ok, Vsn} -> Vsn;
+	undefined -> "unknown"
+    end.
 
 %%
 %% @spec (Name::filename()) -> ok
@@ -223,7 +234,7 @@ keyval(String) ->
 keyval(Cs0, Acc) ->
     case drop_blanks(Cs0) of
 	"" -> 
-	    reverse(Acc);
+	    lists:reverse(Acc);
 	Cs1 ->
 	    {Name,Cs2} = split_word(Cs1,[]),
 	    Key = list_to_atom(Name),
@@ -246,22 +257,22 @@ keyval(Cs0, Acc) ->
     end.
 
 split_string([Q|Cs],Q,Acc) ->
-    {reverse(Acc), Cs};
+    {lists:reverse(Acc), Cs};
 split_string([C|Cs],Q,Acc) ->
     split_string(Cs, Q, [C|Acc]);
 split_string([], _Q, Acc) ->
-    {reverse(Acc), []}.
+    {lists:reverse(Acc), []}.
 			    
 split_word([C|Cs],Acc) ->
     if C == ?SP; C == ?TAB; C == ?CR; C == ?NL ->
-	    {reverse(Acc), Cs};
+	    {lists:reverse(Acc), Cs};
        C==$= ->
-	    {reverse(Acc), [$=|Cs]};	    
+	    {lists:reverse(Acc), [$=|Cs]};	    
        true ->
 	    split_word(Cs, [C|Acc])
     end;
 split_word([], Acc) -> 
-    {reverse(Acc),[]}.
+    {lists:reverse(Acc),[]}.
 
 drop_blanks(Cs=[C|Cs1]) ->
     if C == ?SP; C == ?TAB; C == ?CR; C == ?NL -> drop_blanks(Cs1);

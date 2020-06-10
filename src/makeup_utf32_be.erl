@@ -5,10 +5,6 @@
 
 -module(makeup_utf32_be).
 
--rcsid("$Id: makeup_utf32_be.erl,v 1.2 2006/03/06 19:47:32 tony Exp $\n").
-
--vsn("$Revision: 1.2 $ ").
-
 -export([input/1, output/1]).
 
 -include("makeup_utf.hrl").

@@ -7,14 +7,6 @@
 
 -include("../include/makeup.hrl").
  
--import(lists, [member/2,reverse/1,seq/2,append/1]).
--import(lists, [foreach/2,map/2,foldl/3,foldr/3, filter/2]).
--import(lists, [keymember/3,keysearch/3,keysort/2]).
--import(ordsets, [new/0,is_element/2,add_element/2,union/2,subtract/2]).
-
--compile(export_all).
--export([expand_rule/3]).
-
 %% makeup callback module functions
 -export([init/1, final/3, 
 	 text/3, tag_begin/3, tag_end/3,
@@ -22,6 +14,10 @@
 	 declaration/3, dparam/4, dcomment/4, 
 	 section/4, comment/3,
 	 charref/3]).
+
+-export([expand_rule/3]).
+-export([file/1, file/2, file/3]).
+-export([string/1, string/2, string/3]).
 
 -ifdef(debug).
 -define(dbg(Fmt,As), io:format((Fmt),(As))).
@@ -73,7 +69,7 @@ string(Data,Opts,Tab) ->
 
 %% Extract char entities
 mk_ents(Ents,Tab) ->
-    filter(
+    lists:filter(
       fun(E) ->
 	      if E#makeup_entity.type == cdata ->
 		      insert_entry(Tab,{{charref,E#makeup_entity.name},
@@ -84,7 +80,7 @@ mk_ents(Ents,Tab) ->
       end, Ents).
 
 mk_elems(Es, Tab) ->
-    map(fun(E) -> 
+    lists:map(fun(E) -> 
 		insert_elem(Tab, E, Es),
 		E
 	end, Es).
@@ -102,9 +98,9 @@ insert_elem(Tab, E, Es) ->
     Rule = expand_rule(E#makeup_element.rule, Es, [Name]),
     DFA = makeup_re:make_dfa(Rule),
     ets:insert(Tab, {{state_init,Name}, DFA#fa.init}),
-    foreach(
+    lists:foreach(
       fun(#fa_state {id=Si,edges=Edges,accept=Accept}) ->
-	      foreach(
+	      lists:foreach(
 		fun (#fa_edge{id=Sym,target=Sj,action=[]}) ->
 			ets:insert(Tab,{{state,Name,Si,Sym},Sj});
 		    (#fa_edge{id=Sym,target=Sj,action=Action}) ->
@@ -135,9 +131,9 @@ insert_elem(Tab, E, Es) ->
        true -> ok
     end,
     ets:insert(Tab, {{attributes,Name},
-		     map(fun(A) -> A#makeup_attribute.name end,
+		     lists:map(fun(A) -> A#makeup_attribute.name end,
 			 E#makeup_element.attr)}),
-    foreach(
+    lists:foreach(
       fun(A) ->
 	      ets:insert(Tab,{{attribute,Name,A#makeup_attribute.name},
 			      {A#makeup_attribute.type,
@@ -166,8 +162,8 @@ expand_rule({element,En}, Es, Vs) ->
 	false ->
 	    {element,En};
 	{value,E} ->
-	    if E#makeup_element.start == optional ->
-		    case member(En, Vs) of
+	    if E#makeup_element.start =:= optional ->
+		    case lists:member(En, Vs) of
 			true ->
 			    {element,En};
 			false ->
@@ -182,11 +178,11 @@ expand_rule({pclosure,E}, Es,Vs) -> {pclosure,expand_rule(E, Es,Vs)};
 expand_rule({closure,E}, Es,Vs) ->  {closure,expand_rule(E, Es,Vs)};
 expand_rule({optional,E}, Es,Vs) -> {optional,expand_rule(E, Es,Vs)};
 expand_rule({sequence,As},Es,Vs) ->
-    {sequence, map(fun(A) -> expand_rule(A,Es,Vs) end, As)};
+    {sequence, lists:map(fun(A) -> expand_rule(A,Es,Vs) end, As)};
 expand_rule({choice,As},Es,Vs) ->
-    {choice, map(fun(A) -> expand_rule(A,Es,Vs) end, As)};
+    {choice, lists:map(fun(A) -> expand_rule(A,Es,Vs) end, As)};
 expand_rule({all,As},Es,Vs) ->
-    {all, map(fun(A) -> expand_rule(A,Es,Vs) end, As)}.
+    {all, lists:map(fun(A) -> expand_rule(A,Es,Vs) end, As)}.
 
 
 init(Opts) ->
@@ -255,7 +251,7 @@ processing(_PI,_Value,_Line,St) ->
 
 %% <!ENTITY parm*>
 declaration('ENTITY', _Line, St) ->
-    Ts = tokens(cat(reverse(St#cstate.astack), " ")),
+    Ts = tokens(cat(lists:reverse(St#cstate.astack), " ")),
     ?dbg("ENTITY:~w ~p\n", [_Line,Ts]),
     E=case Ts of
 	  [{word,"%"}, {word,Name},{word,"PUBLIC"},
@@ -295,7 +291,7 @@ declaration('ENTITY', _Line, St) ->
 	    St#cstate { astack = [] }
     end;
 declaration('ELEMENT', Line, CSt) ->
-    Data = cat(reverse(CSt#cstate.astack), " "),
+    Data = cat(lists:reverse(CSt#cstate.astack), " "),
     ?dbg("ELEMENT:~w ~s\n", [Line,Data]),
     Ts0 = tokens(Data),
     case catch expand_tokens(Ts0, CSt#cstate.entity_list) of
@@ -318,7 +314,7 @@ declaration('ELEMENT', Line, CSt) ->
 			    error(Line, Error, CSt);
 			{Start,Stop,{Expr,Exception}} ->
 			    {Extension,Restriction}=split_exception(Exception),
-			    foldl(
+			    lists:foldl(
 			      fun(ID,CSt1) ->
 				      add_element(Line,ID,Start,Stop,
 						  Expr,Extension,Restriction,
@@ -329,7 +325,7 @@ declaration('ELEMENT', Line, CSt) ->
     end;
 
 declaration('ATTLIST', Line, CSt) ->
-    Data = cat(reverse(CSt#cstate.astack), " "),
+    Data = cat(lists:reverse(CSt#cstate.astack), " "),
     ?dbg("ATTLIST:~w ~s\n", [Line,Data]),
     Ts0 = tokens(Data),
     case catch expand_tokens(Ts0, CSt#cstate.entity_list) of
@@ -353,7 +349,7 @@ declaration('ATTLIST', Line, CSt) ->
 			{'EXIT',Reason} ->
 			    error(Line, Reason, CSt);
 			As when is_list(As) ->
-			    foldl(
+			    lists:foldl(
 			      fun(ID,CSt1) ->
 				      add_attributes(Line, ID, As, CSt1)
 			      end,CSt,IDList)
@@ -581,7 +577,7 @@ dtext_split([], _Before) ->
     false.
 
 dtext_split([$;|After],Name,Before) ->
-    {reverse(Before), reverse(Name), After};
+    {lists:reverse(Before), lists:reverse(Name), After};
 dtext_split([C|Cs], Name, Before) ->
     if C >= $a, C=<$z ->
 	    dtext_split(Cs,[C|Name],Before);
@@ -677,7 +673,7 @@ expand_string_df(String, Params) ->
 idlist(Ts, St) ->
     case catch parse_expr(Ts, St) of
 	{{choice,IDs},Ts1} -> 
-	    {map(fun({element,E}) -> E; (E) -> E end, IDs), Ts1};
+	    {lists:map(fun({element,E}) -> E; (E) -> E end, IDs), Ts1};
 	{'EXIT', Reason} -> {error,Reason};
 	{{element,ID}, Ts1} when ?is_tag(ID) -> {[ID], Ts1};
 	Other -> {error, {syntax_error,Other}}
@@ -731,19 +727,19 @@ parse_expression(Ts, St) ->
 parse_exception(['-'|Ts], ExList,St) ->
     case parse_expr(['-'|Ts],St) of
 	{E, []} ->
-	    reverse([E|ExList]);
+	    lists:reverse([E|ExList]);
 	{E, Ts1} ->
 	    parse_exception(Ts1, [E|ExList],St)
     end;
 parse_exception(['++'|Ts], ExList, St) ->
     case parse_expr(['++'|Ts], St) of
 	{E, []} ->
-	    reverse([E|ExList]);
+	    lists:reverse([E|ExList]);
 	{E, Ts1} ->
 	    parse_exception(Ts1, [E|ExList],St)
     end;
 parse_exception([], ExList, _St) ->
-    reverse(ExList);
+    lists:reverse(ExList);
 parse_exception(Ts1,_, _) ->
     throw({syntax_error, Ts1}).
 
@@ -794,7 +790,7 @@ parse_expr_list(Ts, Es, Tok, Op, St) ->
 	{E, [Tok|Ts1]} ->
 	    parse_expr_list(Ts1, [E|Es], Tok, Op, St);
 	{E, Ts1} ->
-	    { {Op,reverse([E|Es])}, Ts1}
+	    { {Op,lists:reverse([E|Es])}, Ts1}
     end.
 %%
 %% Attribte declaration:
@@ -822,7 +818,7 @@ parse_attr([{word,Name}|Ts],Acc, St) ->
 	    throw({syntax_error,Ts})
     end;
 parse_attr([], Acc, _St) ->
-    reverse(Acc).
+    lists:reverse(Acc).
 
 mk_enums([{element,E}|Es]) when is_atom(E) ->
     [atom_to_list(E) | mk_enums(Es)];
@@ -890,9 +886,9 @@ parse_attr_status([{string,Value}|Ts],Name,Type,Acc0,St) ->
 %% Verify that elements refered to from rules exists
 cross_ref(St) ->
     Elems = St#cstate.element_list,
-    foldl(
+    lists:foldl(
       fun(E,St1) ->
-	      foldl(
+	      lists:foldl(
 		fun(pcdata,St2) -> St2;
 		   (any,St2) -> St2;
 		   (Name,St2) ->
@@ -910,12 +906,12 @@ cross_ref(St) ->
       end, St, Elems).
 
 %% Concatinate a string parts with optional separator
-cat(Es) ->
-    cat(Es, "").
+%% cat(Es) ->
+%%    cat(Es, "").
 
 cat([], _Sep) -> "";
 cat(Es, Sep) ->
-    append(cat1(Es,Sep)).
+    lists:append(cat1(Es,Sep)).
 
 cat1([E], _Sep) -> [E];
 cat1([E|Es],Sep) -> [E,Sep | cat1(Es,Sep)].
@@ -943,7 +939,7 @@ tokens([$(|Cs],Ts)    -> tokens(Cs,['('|Ts]);
 tokens([$)|Cs],Ts)    -> tokens(Cs,[')'|Ts]);
 tokens([$\"|Cs],Ts)    -> tstring(Cs,$\",[],Ts);
 tokens([$\'|Cs],Ts)    -> tstring(Cs,$\',[],Ts);
-tokens([],Ts)         -> reverse(Ts);
+tokens([],Ts)         -> lists:reverse(Ts);
 tokens([C|Cs],Ts) when C >= $0, C =< $9 -> token(Cs,[C],true,Ts);
 tokens([C|Cs],Ts) when C >= $a, C =< $z -> token(Cs,[C],false,Ts);
 tokens([C|Cs],Ts) when C >= $A, C =< $Z -> token(Cs,[C],false,Ts);
@@ -964,9 +960,9 @@ token([$/|Cs],T,_N,Ts) -> token(Cs,[$/|T],false,Ts);
 token(Cs,T,N,Ts) ->
     if
 	N == true ->
-	    tokens(Cs,[{number,reverse(T)}|Ts]);
+	    tokens(Cs,[{number,lists:reverse(T)}|Ts]);
        true ->
-	    tokens(Cs,[{word,reverse(T)}|Ts])
+	    tokens(Cs,[{word,lists:reverse(T)}|Ts])
     end.
 
 tcomment([$-,$- | Cs], Ts) ->
@@ -1000,7 +996,7 @@ tstring([$\\,C|Cs],Q,Acc,Ts) ->
 	_ -> tstring(Cs,Q,[C|Acc],Ts)
     end;
 tstring([Q|Cs],Q,Acc,Ts) ->
-    tokens(Cs, [{string,reverse(Acc)}|Ts]);
+    tokens(Cs, [{string,lists:reverse(Acc)}|Ts]);
 tstring([C|Cs],Q,Acc,Ts) ->
     tstring(Cs,Q,[C|Acc],Ts);
 tstring([],_,_Acc,_Ts) ->

@@ -5,10 +5,6 @@
 
 -module(makeup_wbxml).
 
--rcsid("$Id: makeup_wbxml.erl,v 1.14 2007/09/04 07:31:10 per Exp $\n").
-
--vsn("$Revision: 1.14 $ ").
-
 -define(dbgi(Fmt,As), io:format((Fmt),(As))).
 
 -ifdef(debug).
@@ -1346,9 +1342,9 @@ encode_strtbl({Length,Tab}) ->
     [encode_mb_u_int32(Length),
      lists:map(fun({_,_,Str}) -> [Str,0] end, reverse(Tab))].
 
-encode_document(E, St) when tuple(E) ->
+encode_document(E, St) when is_tuple(E) ->
     encode_body([E], St);
-encode_document(Es, St) when list(Es) ->
+encode_document(Es, St) when is_list(Es) ->
     encode_body(Es, St).
 
 %% 
@@ -1366,7 +1362,7 @@ encode_body(Cs, St0) ->
 	    {_PI1, St1, Cs1}   = encode_pi_n(Cs, St0),
 	    {Element,St2,Cs2}  = encode_element(Cs1, St1),
 	    {PI2, St3, _Cs3}   = encode_pi_n(Cs2, St2),
-	    {?CONS(Element,PI2), St2};
+	    {?CONS(Element,PI2), St3};
 	true ->
 	    {Element,St2, _Cs2}  = encode_element(Cs, St0),
 	    {Element,St2};
@@ -1475,7 +1471,7 @@ encode_content_n([{'#PCDATA',Text1},{'#PCDATA',Text2}|Es],Tag,St0) ->
     %% i.e merge multi text
     encode_content_n([{'#PCDATA',Text1++Text2} | Es],Tag,St0);
 
-encode_content_n([{'#PCDATA',Text0}|Es],Tag,St0) when binary(Text0) ->
+encode_content_n([{'#PCDATA',Text0}|Es],Tag,St0) when is_binary(Text0) ->
     Partial = St0#wbxml_enc.partial,
     if Partial == close ->
 	    encode_content_n(Es,Tag,St0);
@@ -1512,7 +1508,7 @@ encode_content_n([{'#PCDATA',Text0}|Es],Tag,St0) ->
 		    {?CONS(Data1,Data2), St2}
 	    end
     end;
-encode_content_n(Elem, _Tag,St0) when tuple(Elem) ->
+encode_content_n(Elem, _Tag,St0) when is_tuple(Elem) ->
     {Data1, St1, _Es1} = encode_element([Elem], St0),
     {Data1, St1};
 encode_content_n([],_Tag,St0) ->
@@ -1631,8 +1627,8 @@ enc_value_codes([],Acc,Page,St) ->
 
 enc_opaque(Data, St) ->
     ?dbg("encode_value: opaque=~p\n", [Data]),
-    Len = if binary(Data) -> size(Data);
-	     list(Data) -> length(Data)
+    Len = if is_binary(Data) -> byte_size(Data);
+	     is_list(Data) -> length(Data)
 	  end,
     {[?OPAQUE,encode_mb_u_int32(Len),Data], St}.
 
@@ -1745,9 +1741,9 @@ size_charset(CharSet) ->
 size_strtbl({Length,_Tab}) ->
     size_mb_u_int32(Length) + Length.
 
-size_document(E, St) when tuple(E) ->
+size_document(E, St) when is_tuple(E) ->
     size_body([E], St);
-size_document(Es, St) when list(Es) ->
+size_document(Es, St) when is_list(Es) ->
     size_body(Es, St).
 
 %% 
@@ -1817,7 +1813,7 @@ size_content_n(Es=[{_,_,_}|_],Tag,St0) ->
 size_content_n([{'#PCDATA',Text1},{'#PCDATA',Text2}|Es],Tag,St0) ->
     %% i.e merge multi text
     size_content_n([{'#PCDATA',Text1++Text2} | Es],Tag,St0);
-size_content_n([{'#PCDATA',Text0}|Es],Tag,St0) when binary(Text0) ->
+size_content_n([{'#PCDATA',Text0}|Es],Tag,St0) when is_binary(Text0) ->
     {Size1, St1} = size_opaque(Text0, St0),
     {Size2, St2} = size_content_n(Es,Tag,St1),
     {Size1+Size2, St2};
@@ -1940,8 +1936,8 @@ size_value_codes([],Acc,Page,St) ->
     {Acc,Page, St}.
 
 size_opaque(Data, St) ->
-    Len = if binary(Data) -> size(Data);
-	     list(Data) -> length(Data)
+    Len = if is_binary(Data) -> byte_size(Data);
+	     is_list(Data) -> length(Data)
 	  end,
     {1+size_mb_u_int32(Len)+Len, St}.
 

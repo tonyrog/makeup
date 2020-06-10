@@ -5,13 +5,11 @@
 
 -module(makeup_wsdl).
 
--rcsid("$Id: makeup_wsdl.erl,v 1.6 2009/05/19 19:21:56 sean Exp $\n").
-
--vsn("$Revision: 1.6 $ ").
-
--compile(export_all).
-
--import(lists, [reverse/1, append/1, foreach/2, map/2, foldr/3]).
+-export([file/1]).
+-export([compile/1, compile/2]).
+-export([generate_srv/1]).
+-export([gen_srv_port/3]).
+-export([gen_srv_port/4]).
 
 -include("../include/makeup.hrl").
 -include("../include/makeup_xsd.hrl").
@@ -134,7 +132,7 @@ wsdl_defs([{types,_,Schemas0}|Defs], WSDL) when is_list(Schemas0) ->
 		       Part = if is_atom(Part0) -> [Ns|Part0];
 				 true -> Part0
 			      end,
-		       {Part,As,map(fun(D) -> F(D,Ns,F) end,Def)}
+		       {Part,As,lists:map(fun(D) -> F(D,Ns,F) end,Def)}
 	       end,
     Schemas = lists:map(fun({_,As,_} = Schema) -> case lists:keysearch(xmlns,1,As) of
 						      {value,{_,StrNs}} ->
@@ -161,8 +159,8 @@ wsdl_defs([{import,As,_}|Defs], WSDL) ->
     wsdl_defs(Defs, WSDL#wsdl { elements = Es ++ Elements,
 				types    = Ts ++ Types });
 wsdl_defs([{message,As,Ms0}|Defs], WSDL) ->
-    Ms = map(fun({[wsdl|part],As1,PDefs}) -> {part,As1,PDefs}; (X) -> X end, Ms0),
-    Parts = map(fun({part,As1,_}) ->
+    Ms = lists:map(fun({[wsdl|part],As1,PDefs}) -> {part,As1,PDefs}; (X) -> X end, Ms0),
+    Parts = lists:map(fun({part,As1,_}) ->
 			#wsdl_part { name=attr(name,As1),
 				     element=attr(element,As1),
 				     type=attr(type,As1)}
@@ -189,8 +187,8 @@ wsdl_defs([{binding,As,Operations}|Defs], WSDL) ->
     Bindings = WSDL#wsdl.bindings ++[Binding],
     wsdl_defs(Defs, WSDL#wsdl { bindings = Bindings });
 wsdl_defs([{service,As,Serv0}|Defs], WSDL) ->
-    Serv = map(fun({[wsdl|port],As1,Cs}) -> {port,As1,Cs}; (X) -> X end, Serv0),
-    Ports = foldr(fun({port,As1,Cs},Acc) ->
+    Serv = lists:map(fun({[wsdl|port],As1,Cs}) -> {port,As1,Cs}; (X) -> X end, Serv0),
+    Ports = lists:foldr(fun({port,As1,Cs},Acc) ->
 			  Name1 = attr_am(name,As1),
 			  [#wsdl_port { name=[WSDL#wsdl.ns|Name1],
 					binding=attr(binding,As1),
@@ -228,7 +226,7 @@ wsdl_port_operations([Op|Ops],WSDL,Acc) ->
     io:format("OPERATION? ~p\n", [Op]),
     wsdl_port_operations(Ops,WSDL,Acc);
 wsdl_port_operations([],_WSDL,Acc) ->
-    reverse(Acc).
+    lists:reverse(Acc).
 
 wsdl_port_op([{[wsdl|Op0],As,_Cs}|Op],_Input,Output,Fault) ->
     wsdl_port_op([{Op0,As,_Cs}|Op],_Input,Output,Fault);
@@ -267,7 +265,7 @@ wsdl_bind_operations([Op|Ops],Binding,WSDL,Acc) ->
     io:format("OPERATION? ~p\n", [Op]),
     wsdl_bind_operations(Ops,Binding,WSDL,Acc);
 wsdl_bind_operations([],Binding,_WSDL,Acc) ->
-    {Binding,reverse(Acc)}.
+    {Binding,lists:reverse(Acc)}.
 
 wsdl_bind_op([{[wsdl|Op],As,Input}|Cs],Action,_Input,Output,Fault) ->   
     wsdl_bind_op([{Op,As,Input}|Cs],Action,_Input,Output,Fault);
@@ -328,7 +326,7 @@ generate_cli(WSDL, Opts) ->
 	io:format("gen coders types: ~p\n~p\n",[WSDL#wsdl.types,WSDL#wsdl.elements]),
 	io:format("coder elements~p\n",[gen_coder_type_elements(WSDL)]),
     _CodeRes = makeup_xsd:gen_coders(HrlFileName,GenTypes,GenElements,WSDL#wsdl.attributes,Opts),
-    foreach(
+    lists:foreach(
       fun(Service) ->
 	      [_|ServiceName] = Service#wsdl_service.name,
 	      Mod = lists:concat([ServiceName,"_ports"]),
@@ -343,7 +341,7 @@ generate_cli(WSDL, Opts) ->
 			"            ({R,_,_}=Res,Acc) when R == Rec -> Res;\n"
 			"            (_,Acc) -> Acc end, undefined, Data).\n\n",[]),
 	      io:format(Fd,ns2mod(WSDL#wsdl.attributes,[]),[]),
-	      Res = foreach(
+	      Res = lists:foreach(
 		      fun(Port) ->
 			      gen_cli_port(Fd, Port, WSDL, Opts)
 		      end, Service#wsdl_service.ports),
@@ -383,7 +381,7 @@ gen_cli_port(Fd, Port, PortType, _Binding, WSDL, Opts) ->
 			   L -> {["\"",L,"\""],[]}
 		       end,
     io:format("Location=~p\n", [Location]),
-    foreach(
+    lists:foreach(
       fun(#wsdl_port_operation{name=[_|Name], 
 			       input =Input,
 			       output =Output}) ->
@@ -396,7 +394,7 @@ gen_cli_port(Fd, Port, PortType, _Binding, WSDL, Opts) ->
 		  {{value,Message},{value,Response}} ->
 		      io:format("Input=~p Outpu=~p\n", [Message,Response]),
 		      Args = 
-			  map(
+			  lists:map(
 			    fun(#wsdl_part {name=N,type=undefined,element=E}) ->
 				    T = element_type(E,WSDL),
 				    {N,T,erlify(N)};
@@ -509,14 +507,14 @@ element_type(ElementName, WSDL) ->
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 generate_srv(WSDL) ->
-    foreach(
+    lists:foreach(
       fun(Service) ->
 	      [_|ServiceName] = Service#wsdl_service.name,
 	      Mod = lists:concat([ServiceName,"_srv"]),
 	      FileName = Mod++".erl",
 	      {ok,Fd} = file:open(FileName, [write]),
 	      io:format(Fd, "-module(~p).\n\n", [list_to_atom(Mod)]),
-	      Res = foreach(
+	      Res = lists:foreach(
 		      fun(Port) ->
 			      gen_srv_port(Fd, Port, WSDL)
 		      end, Service#wsdl_service.ports),

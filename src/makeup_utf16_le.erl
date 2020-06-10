@@ -5,12 +5,7 @@
 
 -module(makeup_utf16_le).
 
--rcsid("$Id: makeup_utf16_le.erl,v 1.2 2006/03/06 19:47:32 tony Exp $\n").
-
--vsn("$Revision: 1.2 $ ").
-
--export([input/1, input/4]).
--compile(export_all).
+-export([input/1, output/1]).
 
 -include("makeup_utf.hrl").
 
@@ -23,9 +18,9 @@
 %%     {Valid, [code()], Continuation/1}
 %%
 %%
-input(Bin) when binary(Bin) ->
+input(Bin) when is_binary(Bin) ->
     input(Bin, 0, [], true);
-input(List) when list(List) ->
+input(List) when is_list(List) ->
     input(list_to_binary(List), 0, [], true).
 
 input(Bin, Offset, Acc, Valid) ->
@@ -68,7 +63,7 @@ input(Bin, Offset, Acc, Valid) ->
 output(Us) ->
     output(Us, [], true).
 
-output([U | Us], Acc, Valid) when integer(U) ->
+output([U | Us], Acc, Valid) when is_integer(U) ->
     if U =< ?UNI_MAX_BMP ->
 	    if U >= ?UNI_SUR_HIGH_START, U =< ?UNI_SUR_LOW_END ->
 		    output(Us, [<<?U16(?UNI_REPLACEMENT_CHAR)>>|Acc], false);

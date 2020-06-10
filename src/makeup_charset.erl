@@ -5,11 +5,6 @@
 
 -module(makeup_charset).
 
--rcsid("$Id: makeup_charset.erl,v 1.1 2006/01/23 08:36:23 tony Exp $\n").
-
--vsn("$Revision: 1.1 $ ").
-
-
 -export([to_mime_name/1, to_official_name/1, to_aliases/1]).
 -export([from_mime_name/1]).
 -export([name/1]).

@@ -5,12 +5,6 @@
 
 -module(makeup_fmt).
 
--rcsid("$Id: makeup_fmt.erl,v 1.7 2007/09/04 07:31:10 per Exp $\n").
-
--vsn("$Revision: 1.7 $ ").
-
--import(lists, [reverse/1,map/2, foldl/3, foreach/2, member/2,append/1]).
-
 -export([format/1, format/2]).
 -export([format_begin/1, format_begin/2, 
 	 format_open/2, format_close/2, 
@@ -18,7 +12,6 @@
 -export([format_attributes/1]).
 -export([format_tag_name/1]).
 -export([format_attr_name/1]).
-
 
 -include("../include/makeup.hrl").
 
@@ -166,14 +159,14 @@ format(Doc, Opts) when is_record(Doc,makeup_document) ->
        true ->
 	    case R#makeup_format_option.content_type of
 		"text/xml" ->
-		    XMLProc = append(
+		    XMLProc = lists:append(
 				[ "<?xml" |
 				  format_attributes(xml_version(R)++
 						    xml_encoding(R),["?>\n"])]),
 		    {true,OBFXMLProc} = OBF(XMLProc),
 		    DOCTYPE = if DocType==undefined -> "";
 				 true ->
-				      append(
+				      lists:append(
 					["<!DOCTYPE " | cat(DocType," ",[">\n"])])
 			      end,
 		    {true,OBFDOCTYPE} = OBF(DOCTYPE),
@@ -181,7 +174,7 @@ format(Doc, Opts) when is_record(Doc,makeup_document) ->
 		_ ->
 		    DOCTYPE = if DocType==undefined -> "";
 				 true ->
-				      append(
+				      lists:append(
 					["<!DOCTYPE " | cat(DocType," ",[">\n"])])
 			      end,
 		    {true,OBFDOCTYPE} = OBF(DOCTYPE),
@@ -199,7 +192,7 @@ format(XML,Opts) when is_list(XML) ->
 	   true ->
 		case R#makeup_format_option.content_type of
 		    "text/xml" ->
-			XMLProc = append(
+			XMLProc = lists:append(
 				    [ "<?xml" |
 				      format_attributes(xml_version(R)++
 							xml_encoding(R),["?>\n"])]),
@@ -316,13 +309,13 @@ do_format(St, [H|T], OBF, Partial, Level, Acc) ->
 
 	{Tag,As,[]} ->
 	    if Partial == open, T == [] ->
-		    {reverse([format_ln(St,Level,format_start_tag(Tag,As))|
+		    {lists:reverse([format_ln(St,Level,format_start_tag(Tag,As))|
 			      Acc]),
 		     save_state(St,Level+1)};
 	       Partial == close ->
 		    if T==[] ->
 			    Data = format_ln(St,Level,format_end_tag(Tag)),
-			    {reverse([Data|Acc]),
+			    {lists:reverse([Data|Acc]),
 			     save_state(St,Level)};
 		       true ->
 			    do_format(St,T,OBF,Partial,Level,Acc)
@@ -337,7 +330,7 @@ do_format(St, [H|T], OBF, Partial, Level, Acc) ->
 	    if Partial == open, T == [] ->
 		    {Data,St1} =
 			do_format(St,Content,OBF,Partial,Level+1,[]),
-		    {reverse([Data,
+		    {lists:reverse([Data,
 			      format_ln(St,Level,format_start_tag(Tag,As)) |
 			      Acc]),
 		     St1};
@@ -345,7 +338,7 @@ do_format(St, [H|T], OBF, Partial, Level, Acc) ->
 		    if T == [] ->
 			    {Data,St1} = 
 				do_format(St,Content,OBF,Partial,Level+1,[]),
-			    {reverse([format_ln(St,Level,format_end_tag(Tag)),
+			    {lists:reverse([format_ln(St,Level,format_end_tag(Tag)),
 				      Data]), St1};
 		       true ->
 			    do_format(St,T,OBF,Partial,Level,Acc)
@@ -376,9 +369,9 @@ do_format(St, [H|T], OBF, Partial, Level, Acc) ->
     end;
 do_format(St,[],_OBF,Partial,Level,Acc) ->
     if Partial == true ->
-	    {reverse(Acc), save_state(St,Level)};
+	    {lists:reverse(Acc), save_state(St,Level)};
        true ->
-	    reverse(Acc)
+	    lists:reverse(Acc)
     end;
 do_format(St,T,OBF,Partial,Level,Acc) when is_tuple(T) ->
     do_format(St,[T],OBF,Partial,Level,Acc).
@@ -424,17 +417,17 @@ format_ln(St,Level,D1,D2,D3) ->
 
      
 format_start_tag(Tag, []) when ?is_tag(Tag) ->
-    append(["<", format_tag_name(Tag), ">"]);
+    lists:append(["<", format_tag_name(Tag), ">"]);
 format_start_tag(Tag, As) when ?is_tag(Tag) ->
-    append(["<", format_tag_name(Tag) | format_attributes(As,[">"])]).
+    lists:append(["<", format_tag_name(Tag) | format_attributes(As,[">"])]).
 
 format_empty_tag(Tag, []) when ?is_tag(Tag) ->
-    append(["<", format_tag_name(Tag), "/>"]);
+    lists:append(["<", format_tag_name(Tag), "/>"]);
 format_empty_tag(Tag, As) when ?is_tag(Tag) ->
-    append(["<", format_tag_name(Tag) | format_attributes(As,["/>"])]).
+    lists:append(["<", format_tag_name(Tag) | format_attributes(As,["/>"])]).
 
 format_end_tag(Tag) when ?is_tag(Tag) ->
-    append(["</", format_tag_name(Tag), ">"]).
+    lists:append(["</", format_tag_name(Tag), ">"]).
 
 format_attributes(As) ->
     format_attributes(As, []).
@@ -495,7 +488,7 @@ enc_chars(Cs,Cont,Acc) ->
 	    enc_chars(C,[Cs1|Cont],Acc);
 	[] ->
 	    case Cont of
-		[] -> reverse(Acc);
+		[] -> lists:reverse(Acc);
 		[Cs|Cont1] ->
 		    enc_chars(Cs,Cont1,Acc)
 	    end;
