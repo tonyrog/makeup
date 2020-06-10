@@ -1,0 +1,70 @@
+### File    : wv_settings.tab
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : Wireless village settings table
+### Created : 22 Jul 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+## NOTE
+## SyncML settings are sent to port 49997 on SonyEricsson (Nokia)
+## (use 9200 as originating port)
+##
+
+###
+### DECLARATION SECTION
+### 'pubid'; <code>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; ""
+
+mimetype; binary; "application/x-vnd.wv.csp-prov.ota+wbxml"
+mimetype; text; "application/x-vnd.wv.csp-prov.ota+xml"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+
+05; 'WVCommon'
+06; 'WVHTTP'
+07; 'WVOTAVersion'
+08; 'WVPassword'
+09; 'WVPreferredProtocol'
+0A; 'WVProxy'
+0B; 'WVProxyAddress'
+0C; 'WVProxyPassword'
+0D; 'WVProxyPort'
+0E; 'WVProxyUser'
+0F; 'WVRefName'
+10; 'WVSAPFourWaySupported'
+11; 'WVSAPMobileNumber'
+12; 'WVSAPURI'
+13; 'WVSettings'
+14; 'WVSettingsName'
+15; 'WVSMS'
+16; 'WVSMSCMobileNumber'
+17; 'WVSupportedVersion'
+18; 'WVUserID'
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute'; 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag>; <value-pattern> ; <function>]*
+###
+extension; page; 0

@@ -1,0 +1,18 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+%%% @author Tony Rogvall <tony@rogvall.se>
+%%% @copyright (C) 2020, Tony Rogvall
+%%% @doc
+%%%
+%%% @end
+%%% Created : 10 Jun 2020 by Tony Rogvall <tony@rogvall.se>
+
+main(["verify"|Args]) -> makeup_cmd:verify(Args);
+main(["compile"|Args]) -> makeup_cmd:compile(Args);
+main(["wbxml"|Args]) -> makeup_cmd:wbxml(Args);
+main(["config"|Args]) -> makeup_cmd:config(Args);
+main(["xml2wbxml"|Args]) -> makeup_cmd:xml2wbxml(Args);
+main(["wbxml2xml"|Args]) -> makeup_cmd:wbxml2xml(Args);
+main(_) ->
+    io:format("usage: makeup verify|compile|wbxml|config|xml2wbxml|wbxml2xml <options> [file...]\n"),
+    halt(1).

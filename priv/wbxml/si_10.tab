@@ -1,0 +1,63 @@
+### File    : si_10.tab
+### Author  :  <tony@bit.hemma.se>
+### Description : Reference: WAP-167-ServiceInd-20010731-a.pdf
+### Created : 21 Aug 2003 by  <tony@bit.hemma.se>
+
+###
+### DECLARATION SECTION
+###
+pubid; 00; "-//WAPFORUM//DTD SI 1.0//EN"
+    
+mimetype; binary; "application/vnd.wap.sic"
+mimetype; text;   "text/vnd.wap.si"
+
+###
+### TAG SECTION
+###  tag; <hex>; <name>
+###
+tag; page; 0
+05; 'si'
+06; 'indication'
+07; 'info'
+08; 'item'
+
+
+###
+### ATTRIBUTE SECTION 
+###  attribute; <hex>; <name> [; <value-prefix> ]
+###
+attribute; page; 0
+05; action; signal-none
+06; action; signal-low
+07; action; signal-medium
+08; action; signal-high
+09; action; delete
+0A; created
+0B; href
+0C; href; "http://"
+0D; href; "http://www."
+0E; href; "https://"
+0F; href; "https://www."
+10; si-expires
+11; si-id
+12; class
+
+###
+### VALUE SECTION
+###  value; <hex>; <value>
+###
+value; page; 0
+85; ".com/"
+86; ".edu/"
+87; ".net/"
+88; ".org/"
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag> ; <context-pattern> <function>]*
+###
+extension; page; 0
+opaque; value; si-expires; ; si_datetime
+opaque; value; created;    ; si_datetime

@@ -1,0 +1,46 @@
+### File    : sl_10.erl
+### Author  :  <tony@bit.hemma.se>
+### Description : Reference: WAP-168-ServiceLoad-20010731-a.pdf
+### Created : 1 Jun 2004 by  <tony@bit.hemma.se>
+
+###
+### DECLARATION SECTION
+### 'pubid'; <hex>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; "-//WAPFORUM//DTD SL 1.0//EN"
+
+mimetype; binary; "application/vnd.wap.slc"
+mimetype; text;   "text/vnd.wap.sl"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+05; 'sl'
+
+###
+### ATTRIBUTE SECTION 
+###  attribute; <hex>; <name> [; <value-prefix> ]
+###
+attribute; page; 0
+05; 'action'; "execute-low"
+06; 'action'; "execute-high"
+07; 'action'; "cache"
+08; 'href'; ""
+09; 'href'; "http://"
+0A; 'href'; "http://www."
+0B; 'href'; "https://"
+0C; 'href'; "https://www."
+
+###
+### VALUE SECTION
+###  value; <hex>; <value>
+###
+value; page; 0
+85; ".com/"
+86; ".edu/"
+87; ".net/"
+88; ".org/"

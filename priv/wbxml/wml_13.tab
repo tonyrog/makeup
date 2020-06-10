@@ -1,0 +1,193 @@
+### File    : wml_13.tab
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : Reference SPEC-WML-20000219-a.pdf (WAP-1.2.1)
+### Created : 23 Jul 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+pubid; 00; "-//WAPFORUM//DTD WML 1.3//EN"
+
+mimetype; binary; "application/vnd.wap.wmlc"
+mimetype; text; "text/vnd.wap.wml"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+
+tag; page; 0
+1b; 'pre'
+1c; 'a'
+1d; 'td'
+1e; 'tr'
+1f; 'table'
+20; 'p'
+21; 'postfield'
+22; 'anchor'
+23; 'access'
+24; 'b'
+25; 'big'
+26; 'br'
+27; 'card'
+28; 'do'
+29; 'em'
+2a; 'fieldset'
+2b; 'go'
+2c; 'head'
+2d; 'i'
+2e; 'img'
+2f; 'input'
+30; 'meta'
+31; 'noop'
+32; 'prev'
+33; 'onevent'
+34; 'optgroup'
+35; 'option'
+36; 'refresh'
+37; 'select'
+3e; 'setvar'
+38; 'small'
+39; 'strong'
+3b; 'template'
+3c; 'timer'
+3d; 'u'
+3f; 'wml'
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute'; 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+05; 'accept-charset'; ""
+06; align; "bottom"
+07; align; "center"
+08; align; "left"
+09; align; "middle"
+0a; align; "right"
+0b; align; "top"
+0c; alt; ""
+0d; content; ""
+0f; domain; ""
+10; emptyok; "false"
+11; emptyok; "true"
+12; format;  ""
+13; height;  ""
+14; hspace; ""
+15; ivalue; ""
+16; iname; ""
+18; label; ""
+19; localsrc;""
+1a; maxlength; ""
+1b; method; "get"
+1c; method; "post"
+1d; mode; "nowrap"
+1e; mode; "wrap"
+1f; multiple; "false"
+20; multiple; "true"
+21; name; ""
+22; newcontext;"false"
+23; newcontext;"true"
+24; onpick;""
+25; onenterbackward;""
+26; onenterforward;""
+27; ontimer;""
+28; optional;"false"
+29; optional;"true"
+2a; path;""
+2e; scheme;""
+2f; sendreferer;"false"
+30; sendreferer;"true"
+31; size;""
+32; src;""
+33; ordered;"true"
+34; ordered;"false"
+35; tabindex;""
+36; title;""
+37; type;""
+38; type;"accept"
+39; type;"delete"
+3a; type;"help"
+3b; type;"password"
+3c; type;"onpick"
+3d; type;"onenterbackward"
+3e; type;"onenterforward"
+3f; type;"ontimer"
+45; type;"options"
+46; type;"prev"
+47; type;"reset"
+48; type; "text"
+49; type; "vnd."
+4a; href;    ""
+4b; href;    "http://"
+4c; href;    "https://"
+4d; value;""
+4e; vspace;""
+4f; width;""
+50; 'xml:lang'; ""
+52; align; ""
+53; columns; ""
+54; class; ""
+55; id; ""
+56; forua;   "false"
+57; forua;   "true"
+58; src;"http://"
+59; src;"https://"
+5a; 'http-equiv'; ""
+5b; 'http-equiv'; "Content-Type"
+5c; content; "application/vnd.wap.wmlc;charset="
+5d; 'http-equiv'; "Expires"
+5e; accesskey; ""
+5f; enctype; ""
+60; enctype; "application/x-www-form-urlencoded"
+61; enctype, "multipart/form-data"
+62; 'xml:space'; "preserve"
+63; 'xml:space'  "default"
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+85; ".com/"
+86; ".edu/"
+87; ".net/"
+88; ".org/"
+89; "accept"
+8a; "bottom"
+8b; "clear"
+8c; "delete"
+8d; "help"
+8e; "http://"
+8f; "http://www."
+90; "https://"
+91; "https://www."
+93; "middle"
+94; "nowrap"
+96; "onenterbackward"
+97; "onenterforward"
+95; "onpick"
+98; "ontimer"
+99; "options"
+9a; "password"
+9b; "reset"
+9d; "text"
+9e; "top"
+9f; "unknown"
+a0; "wrap"
+a1; "www."
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag> ; <function>]*
+###
+extension; page; 0
+ext0; content; _; $(; wml_content
+ext1; content; _; $(; wml_content
+ext2; content; _; $(; wml_content
+ext0; value;   _; $(; wml_value
+ext1; value;   _; $(; wml_value
+ext2; value;   _; $(; wml_value

@@ -13,6 +13,8 @@
 	 make_dfa_new/1,
 	 minimise_dfa/2]).
 
+%% -define(debug, true).
+
 -include("../include/makeup.hrl").
 
 -define(epsilon, empty).    %% epsilon
@@ -685,8 +687,10 @@ symbols({pclosure,RE}, Symbols) ->
     symbols(RE,Symbols);
 symbols({optional,RE}, Symbols) ->
     symbols(RE,Symbols);
-symbols(?epsilon, Symbols) ->  Symbols;
-symbols(?any, Symbols) ->    Symbols;
+symbols(?epsilon, Symbols) ->
+    Symbols;
+symbols(?any, Symbols) ->
+    Symbols;
 symbols(?dot, Symbols) ->
     ordsets:add_element(?dot,Symbols); %% Is this it?
 symbols({action,Action},Symbols) -> 
@@ -696,7 +700,9 @@ symbols(?pcdata, Symbols) ->
 symbols({element,E}, Symbols) ->
     ordsets:add_element(E, Symbols);
 symbols({char,C}, Symbols) ->
-    ordsets:add_element(C, Symbols).
+    ordsets:add_element(C, Symbols);
+symbols(undefined, Symbols) ->
+    Symbols.
 
 %% Create and NFA from a RegExp
 make_nfa(RE) ->

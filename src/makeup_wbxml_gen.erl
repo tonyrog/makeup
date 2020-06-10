@@ -29,10 +29,10 @@ compile(File) ->
     compile(File, []).
 
 compile(File, Opts) ->
-    case csvfile:fold(File,
-		 [{quote,?DQUOTE},{xquote,?SQUOTE},
-		  {comment,$\#},{space,trim}], 
-		      fun(A,S) -> [A|S] end, []) of
+    case makeup_csv:fold(File,
+			 [{quote,?DQUOTE},{xquote,?SQUOTE},
+			  {comment,$\#},{space,trim}], 
+			 fun(A,S) -> [A|S] end, []) of
 	Error={error,_} ->
 	    Error;
 	List ->

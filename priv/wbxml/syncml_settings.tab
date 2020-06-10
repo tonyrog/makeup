@@ -1,0 +1,70 @@
+### File    : wbxml_syncml_setting.erl
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : SyncML settings table
+### Created : 22 Jul 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+## NOTE
+## SyncML settings are sent to port 49996 on SonyEricsson (Nokia)
+## (use 49154 as originating port)
+##
+
+###
+### DECLARATION SECTION
+### 'pubid'; <code>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; ""
+
+mimetype; binary; "application/vnd.nokia.syncset+wbxml"
+mimetype; text; "application/vnd.nokia.syncset+xml"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+
+05; 'Addr'
+06; 'AddrType'
+07; 'Auth'
+08; 'AuthLevel'
+09; 'AuthScheme'
+0A; 'Bearer'
+0B; 'ConRef'
+0C; 'ConType'
+0D; 'Cred'
+0E; 'CTType'
+0F; 'CTVer'
+10; 'HostAddr'
+11; 'Name'
+12; 'Port'
+13; 'RefID'
+14; 'RemoteDB'
+15; 'SyncSettings'
+16; 'URI'
+17; 'Username'
+18; 'Version'.
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute'; 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag>; <value-pattern> ; <function>]*
+###
+extension; page; 0

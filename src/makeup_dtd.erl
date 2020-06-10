@@ -148,6 +148,7 @@ insert_entry(Tab, Entry) ->
 %%     
 
 expand_rule(empty, _Es, _Vs)  -> empty;
+expand_rule(undefined, _Es, _Vs)  -> empty;
 expand_rule(pcdata,_Es, _Vs)  -> pcdata;
 expand_rule(any,_Es, _Vs)     -> any;
 expand_rule({element,En}, Es, Vs) ->

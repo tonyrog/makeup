@@ -1,0 +1,89 @@
+### File    : browser_settings.tab
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : Nokia/Ericsson OTA Browser Settings
+### Created : 22 Jul 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+###
+### DECLARATION SECTION
+###
+mimetype; binary; "application/x-wap-prov.browser-settings"
+mimetype; text; "text/x-wap-prov.browser-settings"
+
+###
+### TAG SECTION
+###  tag; <hex>; <name>
+###
+tag; page; 0
+05; 'CHARACTERISTIC-LIST'
+06; 'CHARACTERISTIC'
+07; 'PARM'
+
+###
+### ATTRIBUTE SECTION 
+###  attribute; <hex>; <name> [; <value-prefix> ]
+###
+attribute; page; 0
+
+06; 'TYPE'; "ADDRESS"
+07; 'TYPE'; "URL"
+08; 'TYPE'; "NAME"
+10; 'NAME'; ""
+11; 'VALUE'; ""
+12; 'NAME'; "BEARER"
+13; 'NAME'; "PROXY"
+14; 'NAME'; "PORT"
+15; 'NAME'; "NAME"
+16; 'NAME'; "PROXY_TYPE"
+17; 'NAME'; "URL"
+18; 'NAME'; "PROXY_AUTHNAME"
+19; 'NAME'; "PROXY_AUTHSECRET"
+1A; 'NAME'; "SMS_SMSC_ADDRESS"
+1B; 'NAME'; "USSD_SERVICE_CODE"
+1C; 'NAME'; "GPRS_ACCESSPOINTNAME"
+1D; 'NAME'; "PPP_LOGINTYPE"
+1E; 'NAME'; "PROXY_LOGINTYPE"
+21; 'NAME'; "CSD_DIALSTRING"
+28; 'NAME'; "CSD_CALLTYPE"
+29; 'NAME'; "CSD_CALLSPEED"
+22; 'NAME'; "PPP_AUTHTYPE"
+23; 'NAME'; "PPP_AUTHNAME"
+24; 'NAME'; "PPP_AUTHSECRET"
+45; 'VALUE'; "GSM/CSD"
+46; 'VALUE'; "GSM/SMS"
+47; 'VALUE'; "GSM/USSD"
+48; 'VALUE'; "IS-136/CSD"
+49; 'VALUE'; "GPRS"
+60; 'VALUE'; "9200"
+61; 'VALUE'; "9201"
+62; 'VALUE'; "9202"
+63; 'VALUE'; "9203"
+64; 'VALUE'; "AUTOMATIC"
+65; 'VALUE'; "MANUAL"
+6A; 'VALUE'; "AUTO"
+6B; 'VALUE'; "9600"
+6C; 'VALUE'; "14400"
+6D; 'VALUE'; "19200"
+6E; 'VALUE'; "28800"
+6F; 'VALUE'; "38400"
+70; 'VALUE'; "PAP"
+71; 'VALUE'; "CHAP"
+72; 'VALUE'; "ANALOGUE"
+73; 'VALUE'; "ISDN"
+74; 'VALUE'; "43200"
+75; 'VALUE'; "57600"
+76; 'VALUE'; "MSISDN_NO"
+77; 'VALUE'; "IPV4"
+78; 'VALUE'; "MS_CHAP"
+7C; 'TYPE'; "MMSURL"
+7D; 'TYPE'; "ID"
+7E; 'NAME'; "ISP_NAME"
+7F; 'TYPE'; "BOOKMARK"
+
+
+
+
+
+    
+
+
+

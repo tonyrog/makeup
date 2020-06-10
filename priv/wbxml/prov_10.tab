@@ -1,0 +1,219 @@
+### File    : prov_10.tab
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : OMA ProvCont1.1 (PROV 1.0)
+###              Last updated standard: OMA-WAP-ProvCont-V1_1-2002112-C
+### Created : 20 Nov 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+###
+### DECLARATION SECTION
+###
+pubid; 00; "-//WAPFORUM//DTD PROV 1.0//EN"
+
+mimetype; binary; "application/vnd.wap.connectivity-wbxml"
+mimetype; text;   "text/vnd.wap.connectivity-xml"
+
+
+###
+### TAG SECTION
+###  tag; <hex>; <name>
+###
+tag; page; 0
+05; 'wap-provisioningdoc'
+06; 'characteristic'
+07; 'parm'
+tag; page; 1
+06; 'characteristic'
+07; 'parm'
+
+###
+### ATTRIBUTE SECTION 
+###  attribute; <hex>; <name> [; <value-prefix> ]
+###
+attribute; page; 0
+05; name; ""			# nokia first
+06; value; ""			# nokia first
+07; name; "NAME"		# nokia first
+08; name; "NAP-ADDRESS"
+09; name; "NAP-ADDRTYPE"
+0A; name; "CALLTYPE"
+0B; name; "VALIDUNTIL"
+0C; name; "AUTHTYPE"
+0D; name; "AUTHNAME"
+0E; name; "AUTHSECRET"
+0F; name; "LINGER"
+10; name; "BEARER"
+11; name; "NAPID"
+12; name; "COUNTRY"
+13; name; "NETWORK"
+14; name; "INTERNET"
+15; name; "PROXY-ID"
+16; name; "PROXY-PROVIDER-ID"
+17; name; "DOMAIN"
+18; name; "PROVURL"
+19; name; "PXAUTH-TYPE"
+1A; name; "PXAUTH-ID"
+1B; name; "PXAUTH-PW"
+1C; name; "STARTPAGE"
+1D; name; "BASAUTH-ID"
+1E; name; "BASAUTH-PW"
+1F; name; "PUSHENABLED"
+20; name; "PXADDR"
+21; name; "PXADDRTYPE"
+22; name; "TO-NAPID"		# nokia first
+23; name; "PORTNBR"		# nokia first
+24; name; "SERVICE"
+25; name; "LINKSPEED"
+26; name; "DNLINKSPEED"
+27; name; "LOCAL-ADDR"
+28; name; "LOCAL-ADDRTYPE"
+29; name; "CONTEXT-ALLOW"
+2A; name; "TRUST"
+2B; name; "MASTER"
+2C; name; "SID"
+2D; name; "SOC"
+2E; name; "WSP-VERSION"
+2F; name; "PHYSICAL-PROXY-ID"
+30; name; "CLIENT-ID"
+31; name; "DELIVERY-ERR-SDU"
+32; name; "DELIVERY-ORDER"
+33; name; "TRAFFIC-CLASS"
+34; name; "MAX-SDU-SIZE"
+35; name; "MAX-BITRATE-UPLINK"
+36; name; "MAX-BITRATE-DNLINK"
+37; name; "RESIDUAL-BER"
+38; name; "SDU-ERROR-RATIO"
+39; name; "TRAFFIC-HANDL-PRIO"
+3A; name; "TRANSFER-DELAY"
+3B; name; "GUARANTEED-BITRATE-UPLINK"
+3C; name; "GUARANTEED-BITRATE-DNLINK"
+3D; name; "PXADDR-FQDN"
+3E; name; "PROXY-PW"
+3F; name; "PPGAUTH-TYPE"
+45; version;  ""
+46; version;  "1.0"
+47; name; "PULLENABLED"
+48; name; "DNS-ADDR"
+49; name; "MAX-NUM-RETRY"
+4A; name; "FIRST-RETRY-TIMEOUT"
+4B; name; "REREG-THRESHOLD"
+4C; name; "T-BIT"
+4E; name; "AUTH-ENTITY"
+4F; name; "SPI"
+50; type; ""
+51; type; "PXLOGICAL"
+52; type; "PXPHYSICAL"
+53; type; "PORT"		# nokia first=0
+54; type; "VALIDITY"
+55; type; "NAPDEF"
+56; type; "BOOTSTRAP"
+57; type; "VENDORCONFIG"
+58; type; "CLIENTIDENTITY"
+59; type; "PXAUTHINFO"
+5A; type; "NAPAUTHINFO"
+5B; type; "ACCESS"
+
+attribute; page; 1
+05; name; ""			# nokia 0=first
+06; value; ""			# nokia 0=first
+07; name; "NAME"		# nokia 0=first
+14; name; "INTERNET"
+1C; name; "STARTPAGE"
+22; name; "TO-NAPID"		# nokia 0=first
+23; name; "PORTNBR"		# nokia 0=first
+24; name; "SERVICE"
+2E; name; "AACCEPT"
+2F; name; "AAUTHDATA"
+30; name; "AAUTHLEVEL"
+31; name; "AAUTHNAME"
+32; name; "AAUTHSECRET"
+33; name; "AAUTHTYPE"
+34; name; "ADDR"
+35; name; "ADDRTYPE"
+36; name; "APPID"
+37; name; "APROTOCOL"
+38; name; "PROVIDER-ID"
+39; name; "TO-PROXY"
+3A; name; "URI"
+3B; name; "RULE"
+50; type; ""
+53; type; "PORT"		# nokia first=0
+58; type; "CLIENTIDENTITY"
+55; type; "APPLICATION"
+56; type; "APPADDR"
+57; type; "APPAUTH"
+59; type; "RESOURCE"
+
+###
+### VALUE SECTION
+###  value; <hex>; <value>
+###
+value; page; 0
+85; "IPV4"
+86; "IPV6"
+87; "E164"
+88; "ALPHA"
+89; "APN"
+8A; "SCODE"
+8B; "TETRA-ITSI"
+8C; "MAN"
+90; "ANALOG-MODEM"
+91; "V.120"
+92; "V.110"
+93; "X.31"
+94; "BIT-TRANSPARENT"
+95; "DIRECT-ASYNCHRONOUS-DATA-SERVICE"
+9A; "PAP"
+9B; "CHAP"
+9C; "HTTP-BASIC"
+9D; "HTTP-DIGEST"
+9E; "WTLS-SS"
+9F; "MD5"
+A2; "GSM-USSD"
+A3; "GSM-SMS"
+A4; "ANSI-136-GUTS"
+A5; "IS-95-CDMA-SMS"
+A6; "IS-95-CDMA-CSD"
+A7; "IS-95-CDMA-PACKET"
+A8; "ANSI-136-CSD"
+A9; "ANSI-136-GPRS"
+AA; "GSM-CSD"
+AB; "GSM-GPRS"
+AC; "AMPS-CDPD"
+AD; "PDC-CSD"
+AE; "PDC-PACKET"
+AF; "IDEN-SMS"
+B0; "IDEN-CSD"
+B1; "IDEN-PACKET"
+B2; "FLEX/REFLEX"
+B3; "PHS-SMS"
+B4; "PHS-CSD"
+B5; "TETRA-SDS"
+B6; "TETRA-PACKET"
+B7; "ANSI-136-GHOST"
+B8; "MOBITEX-MPAK"
+B9; "CDMA2000-1X-SIMPLE-IP"
+BA; "CDMA2000-1X-MOBILE-IP"
+C5; "AUTOBAUDING"
+CA; "CL-WSP"
+CB; "CO-WSP"
+CC; "CL-SEC-WSP"
+CD; "CO-SEC-WSP"
+CE; "CL-SEC-WTA"
+CF; "CO-SEC-WTA"
+D0; "OTA-HTTP-TO"
+D1; "OTA-HTTP-TLS-TO"
+D2; "OTA-HTTP-PO"
+D3; "OTA-HTTP-TLS-PO"
+E0; "AAA"
+E1; "HA"
+
+value; page; 1
+86; "IPV6"
+87; "E164"
+88; "ALPHA"
+8D; "APPSRV"
+8E; "OBEX"
+90; ","
+91; "HTTP-"
+92; "BASIC"
+93; "DIGEST"

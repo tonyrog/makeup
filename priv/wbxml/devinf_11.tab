@@ -1,0 +1,85 @@
+### File    : devinfo_11.tab
+### Author  : Tony Rogvall <tony@iMac.local>
+### Description : SyncML device information
+###     syncml_devinf_v11_20020215.dtd
+### Created : 12 Nov 2005 by Tony Rogvall <tony@bix.hemma.se>
+
+### Syncml object name MUST be devinf11
+
+###
+### DECLARATION SECTION
+### 'pubid'; <code>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; "-//SYNCML//DTD DevInf 1.1//EN"
+
+mimetype; binary; "application/vnd.syncml-devinf+wbxml"
+mimetype; text; "application/vnd.syncml-devinf+xml"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+05; 'CTCap'
+06; 'CTType'
+07; 'DataStore'
+08; 'DataType'
+09; 'DevID'
+0A; 'DevInf'
+0B; 'DevTyp'
+0C; 'DisplayName'
+0D; 'DSMem'
+0E; 'Ext'
+0F; 'FwV'
+10; 'HwV'
+11; 'Man'
+12; 'MaxGUIDSize'
+13; 'MaxID'
+14; 'MaxMem'
+15; 'Mod'
+16; 'OEM'
+17; 'ParamName'
+18; 'PropName'
+19; 'Rx'
+1A; 'Rx-Pref'
+1B; 'SharedMem'
+1C; 'Size'
+1D; 'SourceRef'
+1E; 'SwV'
+1F; 'SyncCap'
+20; 'SyncType'
+21; 'Tx'
+22; 'Tx-Pref'
+23; 'ValEnum'
+24; 'VerCT'
+25; 'VerDTD'
+26; 'Xnam'
+27; 'Xval'
+28; 'UTC'
+29; 'SupportNumberOfChanges'
+2A; 'SupportLargeObjs'
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute' 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag>; <value-pattern> ; <function>]*
+###
+extension; page; 0

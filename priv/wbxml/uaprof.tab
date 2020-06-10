@@ -1,0 +1,290 @@
+### File    : uaprof.tab
+### Author  : Tony Rogvall <tony@bulldog.synap.se>
+### Description : UAProf WBXML encoding
+###               Ref:WAP-248-UAPROF-20011020-a
+### Created : 31 Aug 2004 by Tony Rogvall <tony@bulldog.synap.se>
+
+###
+### DECLARATION SECTION
+### 'pubid'; <code>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; ""
+
+mimetype; binary; ""  # FIXME
+mimetype; text; ""    # FIXME
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+05; 'rdf:RDF'
+06; 'rdf:Description'
+07; 'rdf:Alt'
+08; 'rdf:Bag'
+09; 'rdf:Seq'
+0A; 'rdf:li'
+0B; 'rdf:type'
+0C; 'rdf:value'
+0D; 'rdf:subject'
+0E; 'rdf:predicate'
+0F; 'rdf:object'
+
+tag; page; 1
+06; 'rdf:Description'
+07; 'rdf:Alt'
+08; 'rdf:Bag'
+09; 'rdf:Seq'
+0A; 'rdf:li'
+0B; 'rdf:type'
+0C; 'prf:component'
+0D; 'prf:defaults'
+0E; 'prf:BitsPerPixel'
+0F; 'prf:ColorCapable'
+10; 'prf:CPU'
+11; 'prf:ImageCapable'
+12; 'prf:InputCharSet'
+13; 'prf:Keyboard'
+15; 'prf:Model'
+16; 'prf:OutputCharSet'
+17; 'prf:PointingResolution'
+18; 'prf:ScreenSize'
+19; 'prf:ScreenSizeChar'
+1A; 'prf:NumberOfSoftKeys'
+1B; 'prf:SoundOutputCapable'
+1C; 'prf:TextInputCapable'
+1D; 'prf:Vendor'
+1E; 'prf:VoiceInputCapable'
+1F; 'prf:AcceptDownloadableSoftware'
+20; 'prf:AudioInputEncoder'
+21; 'prf:DownloadableSoftwareSupport'
+22; 'prf:JavaEnabled'
+23; 'prf:JVMVersion'
+24; 'prf:MexeClassmark'
+25; 'prf:MexeSpec'
+26; 'prf:OSName'
+27; 'prf:OSVendor'
+28; 'prf:OSVersion'
+29; 'prf:RecipientAppAgent'
+2A; 'prf:SoftwareNumber'
+2B; 'prf:VideoInputEncoder'
+2C; 'prf:CurrentBearerService'
+2D; 'prf:SecuritySupport'
+2E; 'prf:SupportedBearers'
+2F; 'prf:WapDeviceClass'
+30; 'prf:WapPushMsgPriority'
+31; 'prf:WapPushMsgSize'
+32; 'prf:WapVersion'
+33; 'prf:WmlDeckSize'
+34; 'prf:WmlScriptLibraries'
+35; 'prf:WmlScriptVersion'
+36; 'prf:WmlVersion'
+37; 'prf:WtaiLibraries'
+38; 'prf:WtaVersion'
+39; 'prf:PixelAspectRatio'
+3A; 'prf:StandardFontProportional'
+3B; 'prf:WapSupportedApplications'
+3C; 'prf:BluetoothProfile'
+3D; 'prf:MexeClassmarks'
+3E; 'prf:MexeSecureDomains'
+
+tag; page; 2
+05; 'rdf:Description'
+06; 'rdf:Alt'
+07; 'rdf:Bag'
+08; 'rdf:Seq'
+09; 'rdf:li'
+0A; 'rdf:type'
+0B; 'prf:component'
+0C; 'prf:defaults'
+0D; 'prf:BrowserName'
+0E; 'prf:BrowserVersion'
+0F; 'prf:CcppAccept'
+10; 'prf:CcppAccept-Charset'
+11; 'prf:CcppAccept-Encoding'
+12; 'prf:CcppAccept-Language'
+13; 'prf:DownloadableBrowserApps'
+14; 'prf:FramesCapable'
+15; 'prf:HtmlVersion'
+16; 'prf:JavaAppletEnabled'
+17; 'prf:JavaScriptEnabled'
+18; 'prf:JavaScriptVersion'
+19; 'prf:PreferenceForFrames'
+1A; 'prf:TablesCapable'
+1B; 'prf:XhtmlVersion'
+1C; 'prf:XhtmlModules'
+
+tag; page; 3
+05; 'rdf:Description'
+06; 'rdf:Alt'
+07; 'rdf:Bag'
+08; 'rdf:Seq'
+09; 'rdf:li'
+0A; 'rdf:type'
+0B; 'prf:component'
+0C; 'prf:defaults'
+0D; 'prf:Push-Accept'
+0E; 'prf:Push-Accept-Charset'
+0F; 'prf:Push-Accept-Encoding'
+10; 'prf:Push-Accept-Language'
+11; 'prf:Push-Accept-AppID'
+12; 'prf:Push-MsgSize'
+13; 'prf:Push-MaxPushReq'
+
+tag; page; 4
+10; 'prf:SupportedBluetoothVersion'
+11; 'prf:SupportedPictogramSet'
+12; 'prf:CcppAccept'
+13; 'prf:CcppAccept-Charset'
+14; 'prf:CcppAccept-Encoding'
+15; 'prf:CcppAccept-Language'
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute'; 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+05; 'ID'; ""
+06; 'rdf:about';""
+07; 'rdf:aboutEach';""
+08; 'rdf:aboutEachPrefix';""
+09; 'rdf:bagID';""
+0A; 'rdf:type';""
+0B; 'rdf:resource';""
+0C; 'rdf:parseType'; "Literal"
+0D; 'rdf:parseType'; "Resource"
+0E; 'xml:lang';""
+0F; 'xmlns:prf';""
+10; 'xmlns:rdf';""
+
+attribute; page; 1
+05; 'rdf:resource';""
+06; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#HardwarePlatform"
+07; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#SoftwarePlatform"
+08; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#NetworkCharacteristics"
+09; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#WapCharacteristics"
+0A; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#BrowserUA"
+0B; 'rdf:resource';"http://www.wapforum.org/profiles/UAPROF/ccppschema-20010430#PushCharacteristics"
+10; 'prf:BitsPerPixel';""
+11; 'prf:ColorCapable';"Yes"
+12; 'prf:ColorCapable';"No"
+13; 'prf:CPU';""
+14; 'prf:ImageCapable';"Yes"
+15; 'prf:ImageCapable';"No"
+16; 'prf:InputCharSet';""
+17; 'prf:Keyboard';""
+19; 'prf:Model';""
+1A; 'prf:OutputCharSet';""
+1B; 'prf:PointingResolution';""
+1C; 'prf:ScreenSize';""
+1D; 'prf:ScreenSizeChar';""
+1E; 'prf:NumberOfSoftKeys';"Yes"
+20; 'prf:SoundOutputCapable';"Yes"
+21; 'prf:SoundOutputCapable';"No"
+22; 'prf:TextInputCapable';"Yes"
+23; 'prf:TextInputCapable';"No"
+24; 'prf:Vendor';""
+25; 'prf:VoiceInputCapable';"Yes"
+26; 'prf:VoiceInputCapable';"No"
+27; 'prf:PixelAspectRatio';""
+28; 'prf:StandardFontProportional';"Yes"
+29; 'prf:StandardFontProportional';"No"
+30; 'prf:AcceptDownloadableSoftware';"Yes"
+31; 'prf:AcceptDownloadableSoftware';"No"
+32; 'prf:AudioInputEncoder';""
+33; 'prf:DownloadableSoftwareSupport';""
+35; 'prf:JavaEnabled';"Yes"
+36; 'prf:JavaEnabled';"No"
+37; 'prf:JVMVersion';""
+38; 'prf:MexeClassmark';""
+39; 'prf:MexeSpec';""
+3A; 'prf:OSName';""
+3B; 'prf:OSVendor';""
+3C; 'prf:OSVersion';""
+3D; 'prf:RecipientAppAgent';""
+3E; 'prf:SoftwareNumber';""
+3F; 'prf:VideoInputEncoder';""
+50; 'prf:CurrentBearerService';""
+51; 'prf:SecuritySupport';""
+52; 'prf:SupportedBearers';""
+60; 'prf:WapDeviceClass';""
+61; 'prf:WapPushMsgPriority';""
+62; 'prf:WapPushMsgSize';""
+63; 'prf:WapVersion';""
+64; 'prf:WmlDeckSize';""
+65; 'prf:WmlScriptLibraries';""
+66; 'prf:WmlScriptVersion';""
+67; 'prf:WmlVersion';""
+68; 'prf:WtaiLibraries';""
+69; 'prf:WtaVersion';""
+70; 'prf:WapSupportedApplications';""
+71; 'prf:BluetoothProfile';""
+72; 'prf:MexeClassmarks';""
+73; 'prf:MexeSecureDomains';"Yes"
+74; 'prf:MexeSecureDomains';"No"
+75; 'prf:SupportedBluetoothVersion';""
+76; 'prf:SupportedPictogramSet';""
+77; 'prf:CcppAccept';""
+78; 'prf:CcppAccept-Charset';""
+79; 'prf:CcppAccept-Encoding';""
+7F; 'prf:CcppAccept-Language';""
+
+attribute; page; 2
+05; 'prf:CcppAccept';""
+06; 'prf:CcppAccept-Charset';""
+07; 'prf:CcppAccept-Encoding';""
+08; 'prf:CcppAccept-Language';""
+09; 'prf:DownloadableBrowserApps';""
+0A; 'prf:FramesCapable';"Yes"
+0B; 'prf:FramesCapable';"No"
+0C; 'prf:HtmlVersion';"3.2"
+0D; 'prf:HtmlVersion';"4.0"
+0E; 'prf:JavaAppletEnabled';"Yes"
+0F; 'prf:JavaAppletEnabled';"No"
+10; 'prf:JavaScriptEnabled';"Yes"
+11; 'prf:JavaScriptEnabled';"No"
+12; 'prf:JavaScriptVersion';""
+13; 'prf:PreferenceForFrames';"Yes"
+14; 'prf:PreferenceForFrames';"No"
+15; 'prf:TablesCapable';"Yes"
+16; 'prf:TablesCapable';"No"
+17; 'prf:XhtmlVersion';""
+18; 'prf:XhtmlModules';""
+19; 'prf:BrowserName';""
+1A; 'prf:BrowserVersion';""
+
+attribute; page; 3
+05; 'prf:Push-Accept'; ""
+06; 'prf:Push-Accept-Charset';""
+07; 'prf:Push-Accept-Encoding';""
+08; 'prf:Push-Accept-Language';""
+09; 'prf:Push-Accept-AppID';""
+0A; 'prf:Push-MsgSize';""
+0B; 'prf:Push-MaxPushReq';""
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+85; "rdf:Statement"
+86; "http://"
+87; "http://www."
+88; "https://"
+89; "https://www."
+8A; "www."
+8B; ".com/"
+8C; ".edu/"
+8D; ".net/"
+8E; ".org/"
+value; page; 1
+85;  "No"
+86;  "Yes"
+value; page; 2
+85;  "No"
+86;  "Yes"

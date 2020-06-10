@@ -1,0 +1,44 @@
+### File    : undef.tab
+### Author  : Tony Rogvall <tony@bix.hemma.se>
+### Description : WBXML template
+### Created : 22 Jul 2003 by Tony Rogvall <tony@bix.hemma.se>
+
+###
+### DECLARATION SECTION
+### 'pubid'; <code>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; ""
+
+mimetype; binary; ""
+mimetype; text; ""
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+
+###
+### ATTRIBUTE SECTION 
+###  'attribute'; 'page'; <page-no>
+###  [<hex>; <name> [; <value-prefix> ] ]*
+###		  
+attribute; page; 0
+
+
+###
+### VALUE SECTION
+###  'value'; 'page'; <page-no>
+###  [ <hex>; <value> ]*
+###
+value; page; 0
+
+###
+### EXTENSION SECTION
+###  'extension'; 'page'; <page-no>
+###   [('ext0'|'ext1'|'ext2'|'opaque') ;
+###     ('content'|'value'); <context-tag>; <value-pattern> ; <function>]*
+###
+extension; page; 0

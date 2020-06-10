@@ -1,0 +1,438 @@
+%%
+%% Mapping of PUBID
+%%
+%% {PUBID, PublicURl, Options, ModuleName, SystemFileName}
+%%
+
+%% XMLSchema 
+
+{ "-//W3C//DTD XMLSCHEMA 200102//EN",
+  "xmlschema/XMLSchema.dtd",
+  [{icase,false}],
+  xmlschema_dtd,
+  "xmlschema/XMLSchema.dtd" }.
+
+{ "datatypes",
+  "xmlschema/datatypes.dtd",
+  [{icase,false}],
+  undefined,
+  "xmlschema/datatypes.dtd" }.
+
+%%
+%% HTML 2.0
+%%
+
+{ "-//IETF//DTD HTML 2.0//EN",
+  "html2/html.dtd",
+  [{icase,true},{start,html}],
+  html2_dtd,
+  "html2/html.dtd" }.
+
+{ "-//IETF//DTD HTML Strict Level 1//EN",
+  "html2/html-1s.dtd",
+ [{icase,true},{start,html}],
+ html2_1s_dtd,
+ "html2/html-1s.dtd" }.
+
+{ "-//IETF//DTD HTML Level 1//EN",
+  "html2/html-1.dtd",
+  [{icase,true},{start,html}],
+  html2_1_dtd,
+  "html2/html-1.dtd"}.
+
+{ "-//IETF//DTD HTML 2.0 Level 1//EN",
+  "html2/html-1.dtd",
+  [{icase,true},{start,html}],
+  html2_1_dtd,
+  "html2/html-1.dtd"}.
+
+{ "-//IETF//DTD HTML 2.0 Strict//EN",
+  "html2/html-s.dtd",
+  [{icase,true},{start,html}],
+  html2_s_dtd,
+  "html2/html-s.dtd"}.
+
+%% { "ISO 8879-1986//ENTITIES Added Latin 1//EN//HTML",
+%%   "html2/ISOlat1.sgml",
+%%    undefined,
+%%   "html2/ISOlat1.sgml" }.
+
+%%
+%% HTML 3.2
+%%
+{ "-//W3C//DTD HTML 3.2 Final//EN",
+  "html32/html32.dtd",
+  [{icase,true},{start,html}],
+  html32_dtd,
+  "html32/html32.dtd" }.
+
+{ "ISO 8879-1986//ENTITIES Added Latin 1//EN//HTML",
+  "html32/lat1.ent",
+  [],
+  undefined,
+  "html32/lat1.ent" }.
+
+%%
+%% HTML 4.0
+%%
+{"-//W3C//DTD HTML 4.0 Transitional//EN",
+ "http://www.w3.org/TR/REC-html40/loose.dtd",
+ [{icase,true},{start,html}],
+ html40_loose_dtd,
+ "html40/loose.dtd"}.
+
+{"-//W3C//DTD HTML 4.0//EN",
+ "http://www.w3.org/TR/REC-html40/strict.dtd",
+ [{icase,true},{start,html}],
+ html40_strict_dtd,
+ "html40/strict.dtd"}.
+
+{"-//W3C//DTD HTML 4.0 Frameset//EN",
+ "http://www.w3.org/TR/REC-html40/frameset.dtd",
+ [{icase,true},{start,frameset}],
+ html40_framset_dtd,
+ "html40/frameset.dtd"}.
+
+%%
+%% HTML 4.01
+%%
+{"-//W3C//DTD HTML 4.01 Transitional//EN",
+ "http://www.w3.org/TR/html4/loose.dtd",
+ [{icase,true},{start,html}],
+ html4_loose_dtd,
+ "html4/loose.dtd"}.
+
+{"-//W3C//DTD HTML 4.01//EN",
+ "http://www.w3.org/TR/html4/strict.dtd",
+ [{icase,true},{start,html}],
+ html4_strict_dtd,
+ "html4/strict.dtd"}.
+
+{"-//W3C//DTD HTML 4.01 Frameset//EN",
+ "http://www.w3.org/TR/html4/frameset.dtd",
+ [{icase,true},{start,frameset}],
+ html4_frameset_dtd,
+ "html4/frameset.dtd"}.
+
+%% HTML 4x Entities
+{"-//W3C//ENTITIES Latin 1//EN//HTML",
+ "HTMLlat1.ent",
+ [],
+ undefined,
+ "ent/HTMLlat1.ent"}.
+
+{"-//W3C//ENTITIES Latin1//EN//HTML",
+ "HTMLlat1.ent",
+ [],
+ undefined,
+ "ent/HTMLlat1.ent"}.
+
+{"-//W3C//ENTITIES Symbols//EN//HTML", 
+ "HTMLsymbol.ent",
+ [],
+ undefined,
+ "ent/HTMLsymbol.ent"}.
+
+{"-//W3C//ENTITIES Special//EN//HTML", 
+ "HTMLspecial.ent",
+ [],
+ undefined,
+ "ent/HTMLspecial.ent"}.
+
+
+%% XHTML 1.0
+{ "-//W3C//DTD XHTML 1.0 Strict//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd",
+  [{start,html}],
+  xhtml1_strict_dtd,
+  "xhtml1/xhtml1-strict.dtd"}.
+
+{ "-//W3C//DTD XHTML 1.0 Transitional//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+  [{start,html}],
+  xhtml1_transitional_dtd,
+  "xhtml1/xhtml1-transitional.dtd"}.
+
+{ "-//W3C//DTD XHTML 1.0 Frameset//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd",
+  [{start,frameset}],
+  xhtml1_frameset_dtd,
+  "xhtml1/xhtml1-frameset.dtd" }.
+
+{ "-//W3C//ENTITIES Latin 1 for XHTML//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent",
+  [],
+  undefined,
+  "xhtml1/xhtml-lat1.ent"}.
+
+{ "-//W3C//ENTITIES Special for XHTML//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent",
+  [],
+  undefined,
+  "xhtml1/xhtml-special.ent"}.
+
+{ "-//W3C//ENTITIES Symbols for XHTML//EN",
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent",
+  [],
+  undefined,
+  "xhtml1/xhtml-symbol.ent" }.
+%%
+%% XHTML 1.1  (MY GOOD WHAT HAVE THEY DONE ;-)
+%%
+{ "-//W3C//DTD XHTML 1.1//EN",
+  "xhtml11/xhtml11.dtd",
+  [{start,html}],
+  xhtml11_dtd,
+  "xhtml11/xhtml11.dtd" }.
+
+
+{ "-//W3C//ELEMENTS XHTML Inline Style 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlstyle-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-inlstyle-1.mod" }.
+
+{ "-//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN",
+  "xhtml11-model-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml11-model-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-framework-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Text 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-text-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-text-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Hypertext 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-hypertext-1.mod" }.
+
+
+{ "-//W3C//ELEMENTS XHTML Lists 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-list-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-list-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Editing Elements 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-edit-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-edit-1.mod" }.
+
+
+{ "-//W3C//ELEMENTS XHTML BIDI Override Element 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-bdo-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-bdo-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Ruby 1.0//EN",
+  "http://www.w3.org/TR/ruby/xhtml-ruby-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-ruby-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Presentation 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-pres-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-pres-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Metainformation 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-meta-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-meta-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Base Element 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-base-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-base-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Style Sheets 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-style-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-style-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Images 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-image-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Client-side Image Maps 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-csismap-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-csismap-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Server-side Image Maps 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-ssismap-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-ssismap-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Param Element 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-param-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-param-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Embedded Object 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-object-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-object-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Tables 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-table-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-table-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Forms 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-form-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-form-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Legacy Markup 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-legacy-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-legacy-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Document Structure 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-struct-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Base Architecture 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-arch-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-arch-1.mod" }.
+
+
+{ "-//W3C//NOTATIONS XHTML Notations 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-notations-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-notations-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Datatypes 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-datatypes-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-datatypes-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Qualified Names 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-qname-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-qname-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-events-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-events-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Common Attributes 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-attribs-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-attribs-1.mod" }.
+
+
+{ "-//W3C//ENTITIES XHTML Character Entities 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-charent-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-charent-1.mod" }.
+
+{ "-//W3C//ELEMENTS XHTML Inline Structural 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlstruct-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-inlstruct-1.mod" }.
+
+
+{ "-//W3C//ELEMENTS XHTML Inline Phrasal 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlphras-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-inlphras-1.mod" }.
+
+
+
+{ "-//W3C//ELEMENTS XHTML Block Structural 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-blkstruct-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-blkstruct-1.mod" }.
+
+
+{ "-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-blkphras-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-blkphras-1.mod" }.
+
+
+{ "-//W3C//ELEMENTS XHTML Scripting 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-script-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-script-1.mod"}.
+
+{ "-//W3C//ELEMENTS XHTML Link Element 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-link-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-link-1.mod"}.
+
+{ "-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-blkpres-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-blkpres-1.mod"}.
+
+{ "-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN",
+  "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlpres-1.mod",
+  [],
+  undefined,
+  "xhtml11/xhtml-inlpres-1.mod" }.
+
+%%
+%% APPLE
+%%
+{ "-//Apple Computer//DTD PLIST 1.0//EN",
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd",
+  [],
+  property_list10_dtd,
+  "apple/PropertyList-1.0.dtd"}.
+
+{ "-//Apple//DTD PLIST 1.0//EN",
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd",
+  [],
+  property_list10_dtd,
+  "apple/PropertyList-1.0.dtd"}.

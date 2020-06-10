@@ -66,9 +66,9 @@ verify_usage() ->
 
 verify_opts(Args, Opts, XOpts) ->
     case Args of
-	['pubid','\'\'','\'\'' | Args1] ->
+	["-p", "" | Args1] ->
 	    verify_opts(Args1, Opts, XOpts);
-	['pubid',ID | Args1] ->
+	["-p", ID | Args1 ] ->
 	    ?dbg("pubid: ~p\n", [ID]),
 	    PubID = arg(ID),
 	    case makeup_dtd_srv:public_entry(PubID) of
@@ -78,24 +78,22 @@ verify_opts(Args, Opts, XOpts) ->
 		    io:format("error: pubid ~s not found\n",[PubID]),
 		    halt(1)
 	    end;
-	['dtd', Mod | Args1] ->
+	["-m", Mod | Args1] ->
 	    verify_opts(Args1, [{dtd,Mod}|Opts], XOpts);
-	['start',Tag | Args1] ->
+	["-s" ,Tag | Args1] ->
 	    verify_opts(Args1, [{start,Tag}|Opts], XOpts);
-	['icase' | Args1] ->
+	["-i" | Args1] ->
 	    verify_opts(Args1, [{icase,true}|Opts], XOpts);	    
-	['case' | Args1] ->
+	["-I" | Args1] ->
 	    verify_opts(Args1, [{icase,false}|Opts], XOpts);	    
-	['namespace' | Args1] ->
+	["-n" | Args1] ->
 	    verify_opts(Args1, [{ns,true}|Opts], XOpts);
-	['validate' | Args1] ->
+	["-v" | Args1] ->
 	    verify_opts(Args1, [{validate,true}|Opts], XOpts);
-	['output' | Args1] ->
+	["-o" | Args1] ->
 	    verify_opts(Args1, Opts, [{output,true}|XOpts]);
-	['\'\'' | Args1] -> %% ignore special qarg (needed to pass PubID)
-	    verify_opts(Args1, Opts, XOpts);
 	[File] ->
-	    {atom_to_list(File), lists:reverse(Opts), XOpts};
+	    {File, lists:reverse(Opts), XOpts};
 	_ ->
 	    verify_usage()
     end.
@@ -143,38 +141,38 @@ compile(Args) ->
     halt(0).
 
 
-compile_opts(['outdir',Dir | Args], Opts) ->
-    compile_opts(Args, [{outdir, atom_to_list(Dir)}|Opts]);
-compile_opts(['mod', Mod | Args], Opts) ->
-    compile_opts(Args, [{mod, atom_to_list(Mod)}|Opts]);
-compile_opts(['out', File | Args], Opts) ->
-    compile_opts(Args, [{out, atom_to_list(File)}|Opts]);
-compile_opts(['outh', File | Args], Opts) ->
-    compile_opts(Args, [{outh, atom_to_list(File)}|Opts]);
-compile_opts(['case' | Args], Opts) ->
+compile_opts(["-o",Dir | Args], Opts) ->
+    compile_opts(Args, [{outdir, Dir}|Opts]);
+compile_opts(["-m", Mod | Args], Opts) ->
+    compile_opts(Args, [{mod, Mod}|Opts]);
+compile_opts(["-O", File | Args], Opts) -> %%?
+    compile_opts(Args, [{out, File}|Opts]);
+compile_opts(["-h", File | Args], Opts) -> %%?
+    compile_opts(Args, [{outh, File}|Opts]);
+compile_opts(["-i" | Args], Opts) ->
     compile_opts(Args, [{icase, false}|Opts]);
-compile_opts(['icase' | Args], Opts) ->
+compile_opts(["-I" | Args], Opts) ->
     compile_opts(Args, [{icase, true}|Opts]);
-compile_opts(['record' | Args], Opts) ->
+compile_opts(["-r" | Args], Opts) ->
     compile_opts(Args, [{record_style, true}|Opts]);
-compile_opts(['namespace' | Args], Opts) ->
+compile_opts(["-n" | Args], Opts) ->
     compile_opts(Args, [{ns, true}|Opts]);
-compile_opts(['prefix',Pfx | Args], Opts) ->
-    compile_opts(Args, [{prefix, atom_to_list(Pfx)}|Opts]);
-compile_opts(['attributes' | Args], Opts) ->
+compile_opts(["-p",Pfx | Args], Opts) ->
+    compile_opts(Args, [{prefix, Pfx}|Opts]);
+compile_opts(["-a" | Args], Opts) ->
     compile_opts(Args, [{record_attributes,true}|Opts]);
-compile_opts(['\'\'' | Args], Opts) ->
-    compile_opts(Args, Opts);
 compile_opts([pubid,_ID | Args], Opts) ->
     compile_opts(Args, Opts);
 compile_opts([File], Opts) ->
-    {atom_to_list(File), Opts};
+    {File, Opts};
 compile_opts(_, _) ->
     compile_usage().
 
 compile_usage() ->    
     io:format("usage: makeup compile [options] <file>\n"
 	      "  -o <dir>   Set output directory\n"
+	      "  -O <file>  Set erlang output file name\n"
+	      "  -H <file>  Set header file name\n"
 	      "  -m <name>  Set output module name\n"
 	      "  -p <name>  Set output prefix name\n"
 	      "  -i         Compile case sensitive tags (XML)\n"
@@ -217,18 +215,14 @@ wbxml(Args) ->
     halt(0).
 
 
-wbxml_opts(['outdir',Dir | Args], Opts) ->
-    wbxml_opts(Args, [{outdir, atom_to_list(Dir)}|Opts]);
-wbxml_opts(['mod', Mod | Args], Opts) ->
-    wbxml_opts(Args, [{mod, atom_to_list(Mod)}|Opts]);
-wbxml_opts(['prefix',Pfx | Args], Opts) ->
-    wbxml_opts(Args, [{prefix, atom_to_list(Pfx)}|Opts]);
-wbxml_opts([pubid, '\'\'' | Args], Opts) ->
-    wbxml_opts(Args, Opts);
-wbxml_opts(['\'\'' | Args], Opts) ->
-    wbxml_opts(Args, Opts);
+wbxml_opts(["-o",Dir | Args], Opts) ->
+    wbxml_opts(Args, [{outdir, Dir}|Opts]);
+wbxml_opts(["-m", Mod | Args], Opts) ->
+    wbxml_opts(Args, [{mod, Mod}|Opts]);
+wbxml_opts(["-p",Prefix | Args], Opts) ->
+    wbxml_opts(Args, [{prefix, Prefix}|Opts]);
 wbxml_opts([File], Opts) ->
-    {atom_to_list(File), Opts};
+    {File, Opts};
 wbxml_opts(_, _) ->
     wbxml_usage().
 
@@ -239,8 +233,6 @@ wbxml_usage() ->
 	      "  -p <name>  Set output prefix name\n"
 	     ),
     halt(1).
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -261,7 +253,7 @@ config(Args) ->
     ?dbg("config: Args=~p\n", [Args]),
     config1(Args).
 
-config1([mod,ID | _Args]) ->
+config1(["-m",ID | _Args]) ->
     PubID = arg(ID),
     case makeup_dtd_srv:public_mod(PubID) of
 	{ok,Mod} ->
@@ -270,7 +262,7 @@ config1([mod,ID | _Args]) ->
 	_Error ->
 	    halt(1)
     end;
-config1([file,ID|_Args]) ->
+config1(["-d",ID|_Args]) ->
     PubId = arg(ID),
     case makeup_dtd_srv:public_file(PubId) of
 	{ok,File} ->
@@ -279,7 +271,7 @@ config1([file,ID|_Args]) ->
 	_Error ->
 	    halt(1)
     end;
-config1([options,ID|_Args]) ->
+config1(["-o",ID|_Args]) ->
     PubId = arg(ID),
     case makeup_dtd_srv:public_entry(PubId) of
 	{ok,_Path,{_PubId,_Url,Opts,_Mod,_File}} ->
@@ -354,7 +346,7 @@ xml2wbxml(Args) ->
     end.
 
 xml2wbxml_usage() ->
-    io:format("usage: makeup xml2wbxml [opts] <file>\n"
+    io:format("usage: makeup xml2wbxml [opts] [key=value] <file>\n"
 	      "  -p <pubid>     PUBID\n"
 	      "  -m <module>    dtd module\n"
 	      "  -w <module>    wbxml module\n"
@@ -365,9 +357,7 @@ xml2wbxml_usage() ->
 
 xml2wbxml_opts(Args, Opts, XOpts) ->
     case Args of
-	['pubid','\'\'','\'\'' | Args1] ->
-	    xml2wbxml_opts(Args1, Opts, XOpts);
-	['pubid',ID | Args1] ->
+	["-p",ID | Args1] ->
 	    PubID = arg(ID),
 	    case makeup_dtd_srv:public_mod(PubID) of
 		{ok,Mod} ->
@@ -378,12 +368,12 @@ xml2wbxml_opts(Args, Opts, XOpts) ->
 		    io:format("error: pubid ~s not found\n",[PubID]),
 		    halt(1)
 	    end;
-	['dtd', Mod | Args1] ->
+	["-m", Mod | Args1] ->
 	    xml2wbxml_opts(Args1, [{dtd,Mod}|Opts], XOpts);
-	['mod', Mod | Args1] ->
+	["-w", Mod | Args1] ->
 	    xml2wbxml_opts(Args1, Opts, [{wbxml_mod,Mod}|XOpts]);
 	['ver', MajMin | Args1] ->
-	    Ver = case catch string:tokens(atom_to_list(MajMin), ".") of
+	    Ver = case catch string:tokens(MajMin, ".") of
 		      [Maj,Min] ->
 			  case catch {list_to_integer(Maj), 
 				      list_to_integer(Min) } of
@@ -394,22 +384,19 @@ xml2wbxml_opts(Args, Opts, XOpts) ->
 			  {1,1}
 		  end,
 	    xml2wbxml_opts(Args1, Opts, [{wbxml_ver,Ver}|XOpts]);
-	['output',File | Args1] ->
-	    xml2wbxml_opts(Args1, Opts, [{output,atom_to_list(File)}|XOpts]);
-	['env',KeyValue|Args1] ->
-	    case string:tokens(atom_to_list(KeyValue),"=") of
+	["-o",File | Args1] ->
+	    xml2wbxml_opts(Args1, Opts, [{output,File}|XOpts]);
+	["-d"| Args1] ->
+	    xml2wbxml_opts(Args1, Opts, [{debug,true}|XOpts]);
+	[Arg | Args1] when Args =/= [] ->
+	    case string:tokens(Arg,"=") of
 		[Key,Value] ->
 		    xml2wbxml_opts(Args1, Opts, [{env,{Key,Value}}|XOpts]);
 		_ ->
-		    xml2wbxml_opts(Args1, Opts, XOpts)
+		    xml2wbxml_usage()
 	    end;
-
-	['\'\'' | Args1] -> %% ignore special qarg (needed to pass PubID)
-	    xml2wbxml_opts(Args1, Opts, XOpts);
-	['debug' | Args1] ->
-	    xml2wbxml_opts(Args1, Opts, [{debug,true}|XOpts]);
 	[File] ->
-	    {atom_to_list(File), lists:reverse(Opts), XOpts};
+	    {File, lists:reverse(Opts), XOpts};
 	_ ->
 	    xml2wbxml_usage()
     end.
@@ -469,20 +456,14 @@ wbxml2xml_usage() ->
 
 wbxml2xml_opts(Args, Opts, XOpts) ->
     case Args of
-	['mod', Mod | Args1] ->
+	["-w", Mod | Args1] ->
 	    wbxml2xml_opts(Args1, Opts, [{wbxml_mod,Mod}|XOpts]);
-	['output',File | Args1] ->
-	    wbxml2xml_opts(Args1, Opts, [{output,atom_to_list(File)}|XOpts]);
-	['debug' | Args1] ->
+	["-o",File | Args1] ->
+	    wbxml2xml_opts(Args1, Opts, [{output,File}|XOpts]);
+	["-d" | Args1] ->
 	    wbxml2xml_opts(Args1, Opts, [{debug,true}|XOpts]);
-	['pubid','\'\'','\'\'' | Args1] ->
-	    wbxml2xml_opts(Args1, Opts, XOpts);
-	['pubid', _ID | Args1] ->
-	    wbxml2xml_opts(Args1, Opts, XOpts);
-	['\'\'' | Args1] -> %% ignore special qarg (needed to pass PubID)
-	    wbxml2xml_opts(Args1, Opts, XOpts);
 	[File] ->
-	    {atom_to_list(File), lists:reverse(Opts), XOpts};
+	    {File, lists:reverse(Opts), XOpts};
 	_ ->
 	    wbxml2xml_usage()
     end.
@@ -496,7 +477,6 @@ arg(A) when is_atom(A) ->
     unquote(atom_to_list(A));
 arg(Arg) when is_list(Arg) -> 
     uq(Arg).
-
 
 unquote([$'|Cs]) ->
     case lists:reverse(Cs) of
@@ -535,8 +515,3 @@ getopt_list(_Opt, [], [], Default) ->
     Default;
 getopt_list(_Opt, [], Acc, _Default) ->
     lists:reverse(Acc).
-
-
-
-
-    

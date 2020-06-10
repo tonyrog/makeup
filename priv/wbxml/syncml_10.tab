@@ -1,0 +1,91 @@
+### File    :  syncml_10.tab
+### Author  :  <tony@bit.hemma.se>
+### Description : Reference: syncml_represent_v101_20010615.pdf
+### Created : 21 Aug 2003 by  <tony@bit.hemma.se>
+
+###
+### DECLARATION SECTION
+### 'pubid'; <hex>; <pubid>
+### 'mimetype'; ['binary'|'text']; <mimetype>
+###
+pubid; 00; "-//SYNCML//DTD SyncML 1.0//EN"
+pubid; 01; "-//SYNCML//DTD MetInf 1.0//EN"
+
+mimetype; binary; "application/vnd.syncml+wbxml"
+mimetype; binary; "application/vnd.syncml.dm+wbxml"
+mimetype; text; "application/vnd.syncml+xml"
+mimetype; text; "application/vnd.syncml.dm+xml"
+
+###
+### TAG SECTION
+###  'tag'; 'page'; <decimal-page-no>
+###  [<hex>; <name>]*
+###
+tag; page; 0
+
+05; 'Add'
+06; 'Alert'
+07; 'Archive'
+08; 'Atomic'
+09; 'Chal'
+0A; 'Cmd'
+0B; 'CmdID'
+0C; 'CmdRef'
+0D; 'Copy'
+0E; 'Cred'
+0F; 'Data'
+10; 'Delete'
+11; 'Exec'
+12; 'Final'
+13; 'Get'
+14; 'Item'
+15; 'Lang'
+16; 'LocName'
+17; 'LocURI'
+18; 'Map'
+19; 'MapItem'
+1A; 'Meta'
+1B; 'MsgID'
+1C; 'MsgRef'
+1D; 'NoResp'
+1E; 'NoResults'
+1F; 'Put'
+20; 'Replace'
+21; 'RespURI'
+22; 'Results'
+23; 'Search'
+24; 'Sequence'
+25; 'SessionID'
+26; 'SftDel'
+27; 'Source'
+28; 'SourceRef'
+29; 'Status'
+2A; 'Sync'
+2B; 'SyncBody'
+2C; 'SyncHdr'
+2D; 'SyncML'
+2E; 'Target'
+2F; 'TargetRef'
+30; 'Reserved'
+31; 'VerDTD'
+32; 'VerProto'
+
+tag; page; 1
+05; 'Anchor'
+06; 'EMI'
+07; 'Format'
+08; 'FreeID'
+09; 'FreeMem'
+0A; 'Last'
+0B; 'Mark'
+0C; 'MaxMsgSize'
+0D; 'Mem'
+0E; 'MetInf'
+0F; 'Next'
+10; 'NextNonce'
+11; 'SharedMem'
+12; 'Size'
+13; 'Type'
+14; 'Version'
+
+
