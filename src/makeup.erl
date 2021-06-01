@@ -20,34 +20,12 @@
 -export([perff/1, perff/2]).
 -export([cvtcase/2, tolower/1]).
 -export([name_ns/2]).
+-export([get_content/1, set_content/2]).
+-export([get_info/1, set_info/2]).
 
 -include("../include/makeup.hrl").
 
 -define(DEFAULT_CBMOD, makeup_tags).
-
-%%
-%% Perf / check parser performance
-%%
-perf(File) ->
-    perf(File,[]).
-    
-perf(File,Opts) ->
-    {ok,Bin} = file:read_file(File),
-    T0 = erlang:monotonic_time(),
-    {ok,_Doc} = makeup_scan:string(Bin,Opts),
-    T1 = erlang:monotonic_time(),
-    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
-    {ok,Time}.
-
-perff(File) ->
-    perff(File,[]).
-
-perff(File,Opts) ->
-    T0 = erlang:monotonic_time(),
-    {ok,_Doc} = makeup_scan:file(File,Opts),
-    T1 = erlang:monotonic_time(),
-    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
-    {ok,Time}.
 
 %% 
 version() ->
@@ -56,6 +34,46 @@ version() ->
 	undefined -> "unknown"
     end.
 
+get_content(#makeup_document{ content = Content }) ->
+    Content.
+
+set_content(Document = #makeup_document{ }, Content) ->
+    Document#makeup_document{ content = Content }.
+
+get_info(#makeup_document{ 
+	    is_valid = IsValid,
+	    is_xml = IsXml,
+	    encoding = Encoding,
+	    doctype = DocType,
+	    xml_version = XmlVersion,
+	    wbxml_version = WbXmlVersion,
+	    wbxml_module = WbXmlModule }) ->
+    #{ is_valid => IsValid,
+       is_xml => IsXml,
+       encoding => Encoding,
+       doctype => DocType,
+       xml_version => XmlVersion,
+       wbxml_version => WbXmlVersion,
+       wbxml_module => WbXmlModule }.
+
+set_info(Document = #makeup_document{ }, Info) ->
+    lists:foldl(
+      fun({is_valid, IsValid},Doc) ->
+	      Doc#makeup_document{is_valid = IsValid};
+	 ({is_xml,IsXml}, Doc) ->
+	      Doc#makeup_document{is_xml = IsXml};
+	 ({encoding,Encoding},Doc) ->
+	      Doc#makeup_document{encoding = Encoding};
+	 ({doctype,DocType}, Doc) ->
+	      Doc#makeup_document{ doctype = DocType };
+	 ({xml_version,XmlVersion},Doc) ->
+	      Doc#makeup_document{ xml_version = XmlVersion};
+	 ({wbxml_version,WbXmlVersion},Doc) ->
+	      Doc#makeup_document{ wbxml_version = WbXmlVersion };
+	 ({wbxml_module,WbXmlModule},Doc) ->
+	      Doc#makeup_document{ wbxml_module = WbXmlModule }
+      end, Document, maps:to_list(Info)).
+		
 %%
 %% @spec (Name::filename()) -> ok
 %% @equiv file(Name, makeup_tags, [])
@@ -272,12 +290,26 @@ drop_blanks(Cs=[C|Cs1]) ->
     end;
 drop_blanks([]) -> [].
 
-
-
+%%
+%% Perf / check parser performance
+%%
+perf(File) ->
+    perf(File,[]).
     
+perf(File,Opts) ->
+    {ok,Bin} = file:read_file(File),
+    T0 = erlang:monotonic_time(),
+    {ok,_Doc} = makeup_scan:string(Bin,Opts),
+    T1 = erlang:monotonic_time(),
+    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
+    {ok,Time}.
 
-    
+perff(File) ->
+    perff(File,[]).
 
-	    
-    
-
+perff(File,Opts) ->
+    T0 = erlang:monotonic_time(),
+    {ok,_Doc} = makeup_scan:file(File,Opts),
+    T1 = erlang:monotonic_time(),
+    Time = erlang:convert_time_unit(T1 - T0, native, microsecond),
+    {ok,Time}.
